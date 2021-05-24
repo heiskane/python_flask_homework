@@ -1,6 +1,8 @@
+# Import libraries
 from flask import Flask, render_template
 from flaskext.markdown import Markdown # pip3 install Flask-Markdown
 
+# Create an instance of the Flask class (object)
 app = Flask(__name__)
 Markdown(app)
 
