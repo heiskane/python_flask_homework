@@ -1,0 +1,12 @@
+{% extends 'layout.html' %}
+{% block content %}
+{% filter markdown %}
+
+## Hello markdown
+
+testing stuff `like this`
+
+	this is a code block
+
+{% endfilter %}
+{% endblock content %}
