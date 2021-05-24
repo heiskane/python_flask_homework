@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>TODO</title>
+	</head>
+	<body>
+		<h1>TODO</h1>
+		<form action="/add">
+			<input type="text" id="todo" name="todo" placeholder="Write a todo">
+			<input type="submit" name="submit">
+		</form>
+		{% for todo in data %}
+		<p><b>TODO: </b>{{ todo.todo }}</p>
+		{% endfor %}
+	</body>
+</html>
