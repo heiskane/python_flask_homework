@@ -1,13 +1,14 @@
 from flask import Flask, render_template, request, url_for, redirect
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DB_URI'] = 'sqlite:///:memory:'
+app.config['SQLALCHEMY_DB_URI'] = 'sqlite:///:memory:' # This is also default value
 db = SQLAlchemy(app)
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
-	username = db.Column(db.String, nullable=False)
+	username = db.Column(db.String, nullable=False, unique=True)
 	password = db.Column(db.String, nullable=False)
 
 	def __repr__(self):
@@ -25,7 +26,8 @@ def home():
 @app.route('/register', methods=['POST'])
 def register():
 	username = request.form['username']
-	password = request.form['password']
+	# https://www.digitalocean.com/community/tutorials/how-to-add-authentication-to-your-app-with-flask-login
+	password = generate_password_hash(request.form['password'], method='sha256')
 	user = User()
 	user.username = username
 	user.password = password
@@ -48,7 +50,8 @@ def update_user():
 	password = request.form['password']
 	user = User.query.filter_by(id=id).first()
 	user.username = username if username else user.username
-	user.password = password if password else user.password
+	password_hash = generate_password_hash(request.form['password'], method='sha256')
+	user.password = password_hash if password else user.password
 	db.session.commit()
 	return redirect(url_for('home'))
 
