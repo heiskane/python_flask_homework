@@ -4,6 +4,9 @@
 		{% set title = "Hello World" if not title else title %}
 		<title>{{title}}</title>
 		<meta charset="UTF-8">
+		<style>
+			{% include "style.css" %}
+		</style>
 	</head>
 	<body>
 		<h1>{{title}}</h1>

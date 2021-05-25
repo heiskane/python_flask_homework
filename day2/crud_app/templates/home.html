@@ -1,0 +1,43 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Register a new user</h2>
+<form action="/register" method="POST">
+	<input type="text" name="username" placeholder="username">
+	<input type="password" name="password" placeholder="password">
+	<input type="submit" value="Reqister user">
+</form>
+
+<h2>Update user by id</h2>
+<form action="/update_user" method="POST">
+	<input type="text" name="id" placeholder="ID number">
+	<input type="text" name="username" placeholder="username">
+	<input type="password" name="password" placeholder="password">
+	<input type="submit" value="Update user">
+</form>
+
+<h2>Delete a user</h2>
+<form action="/delete_user" method="POST">
+	<input type="text" name="id" placeholder="ID number">
+	<input type="submit" value="Delete user">
+</form>
+
+<h2>All Users</h2>
+{% if users %}
+		<table>
+			<tr>
+				<th>Id</th>
+				<th>Username</th>
+				<th>Password</th>
+			</tr>
+	{% for user in users %}
+			<tr>
+				<td>{{ user.id }}</td>
+				<td>{{ user.username }}</td>
+				<td>{{ user.password }}</td>
+			</tr>
+	{% endfor %}
+		</table>
+{% endif %}
+
+{% endblock content %}
