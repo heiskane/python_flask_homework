@@ -3,8 +3,10 @@ import sys
 assert sys.version_info.major == 3
 
 from flask import Flask, render_template
+from flaskext.markdown import Markdown # pip3 install Flask-Markdown
 
 app = Flask(__name__)
+Markdown(app)
 
 @app.route("/")
 def home():

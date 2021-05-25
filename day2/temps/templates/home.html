@@ -8,3 +8,13 @@
 {% endfor %}
 
 {% endblock %}
+
+{% block markdown %}
+{% filter markdown %}
+
+## This is markdown
+
+This is more markdown
+
+{% endfilter %}
+{% endblock markdown %}
