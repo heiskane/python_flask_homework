@@ -1,11 +1,8 @@
 <!doctype html>
 <html lang="en">
 	<head>
-		{% if title %}
+		{% set title = "Hello World" if not title else title %}
 		<title>{{title}}</title>
-		{% else %}
-		<title>Hello World</title>
-		{% endif %}
 		<meta charset="UTF-8">
 	</head>
 	<body>
