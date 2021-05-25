@@ -38,12 +38,16 @@ def delete_employee():
 @app.route('/update_employee', methods=['POST'])
 def update_employee():
 	# https://stackoverflow.com/questions/6699360/flask-sqlalchemy-update-a-rows-information
+	first_name = request.form['first_name']
+	last_name = request.form['last_name']
+	email = request.form['email']
 	id = request.form['id']
-	employee = Employee.query.get(id)
-	employee.first_name = request.form['first_name']
-	employee.last_name = request.form['last_name']
-	employee.email = request.form['email']
-	db.session.commit()
+	if first_name and last_name and email and id:
+		employee = Employee.query.get(id)
+		employee.first_name = first_name
+		employee.last_name = last_name
+		employee.email = email
+		db.session.commit()
 	return redirect(url_for('home'))
 
 if __name__ == '__main__':
