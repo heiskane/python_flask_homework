@@ -3,11 +3,20 @@
 
 <h2>Add Employee</h2>
 
+{# https://flask.palletsprojects.com/en/1.1.x/patterns/flashing/ #}
+{% with messages = get_flashed_messages() %}
+	{% if messages %}
+		{% for message in messages %}
+			<p><b>Error: </b>{{ message }}</p>
+		{% endfor %}
+	{% endif %}
+{% endwith %}
+
 <form method="POST" action="/add_employee">
 	{# https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/required #}
-	<input type="text" name="first_name" required="required" placeholder="First Name">
-	<input type="text" name="last_name" required="required" placeholder="Last Name">
-	<input type="email" name="email" required="required" placeholder="Email Address">
+	<input type="text" name="first_name" placeholder="First Name">
+	<input type="text" name="last_name" placeholder="Last Name">
+	<input type="email" name="email" placeholder="Email Address">
 	<input type="submit" value="Add Employee">
 </form>
 
