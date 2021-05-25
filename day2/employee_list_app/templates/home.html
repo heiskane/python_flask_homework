@@ -1,6 +1,49 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>Hello Other World</h2>
+<h2>Add Employee</h2>
+
+<form method="POST" action="/add_employee">
+	{# https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/required #}
+	<input type="text" name="first_name" required="required" placeholder="First Name">
+	<input type="text" name="last_name" required="required" placeholder="Last Name">
+	<input type="email" name="email" required="required" placeholder="Email Address">
+	<input type="submit" value="Add Employee">
+</form>
+
+<h2>Update Employee info</h2>
+
+<form method="POST" action="/update_employee">
+	<input type="text" name="id" required="required" placeholder="Employee Id">
+	<input type="text" name="first_name" required="required" placeholder="First Name">
+	<input type="text" name="last_name" required="required" placeholder="Last Name">
+	<input type="email" name="email" required="required" placeholder="Email Address">
+	<input type="submit" value="Update Info">
+</form>
+
+<h2>All Employees</h2>
+{# https://developer.mozilla.org/en-US/docs/Web/HTML/Element/table #}
+<table>
+	<tr>
+		<th>Id</th>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+	</tr>
+{% for employee in employees %}
+	<tr>
+		<td>{{ employee.id }}</td>
+		<td>{{ employee.first_name }}</td>
+		<td>{{ employee.last_name }}</td>
+		<td>{{ employee.email }}</td>
+		<td>
+			<form action="/delete_employee" method="POST">
+				<input type="hidden" name="id" value="{{ employee.id }}">
+				<button>Delete</button>
+			</form>
+		</td>
+	</tr>
+{% endfor %}
+</table>
 
 {% endblock content %}

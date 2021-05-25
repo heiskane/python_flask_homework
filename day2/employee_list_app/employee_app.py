@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, redirect, url_for, request
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
@@ -14,11 +14,37 @@ db.create_all()
 
 @app.route('/')
 def home():
-	return render_template('home.html')
+	employees = Employee.query.all()
+	return render_template('home.html', employees=employees)
 
-@app.route('/')
+@app.route('/add_employee', methods=['POST'])
 def add_employee():
-	return "asd"
+	employee = Employee()
+	employee.first_name = request.form['first_name']
+	employee.last_name = request.form['last_name']
+	employee.email = request.form['email']
+	db.session.add(employee)
+	db.session.commit()
+	return redirect(url_for('home'))
+
+@app.route('/delete_employee', methods=['POST'])
+def delete_employee():
+	id = request.form['id']
+	employee = Employee.query.get(id)
+	db.session.delete(employee)
+	db.session.commit()
+	return redirect(url_for('home'))
+
+@app.route('/update_employee', methods=['POST'])
+def update_employee():
+	# https://stackoverflow.com/questions/6699360/flask-sqlalchemy-update-a-rows-information
+	id = request.form['id']
+	employee = Employee.query.get(id)
+	employee.first_name = request.form['first_name']
+	employee.last_name = request.form['last_name']
+	employee.email = request.form['email']
+	db.session.commit()
+	return redirect(url_for('home'))
 
 if __name__ == '__main__':
 	app.run(debug=True)
