@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DB_URI'] = 'sqlite:///:memory:' # This is also default value
+app.config['SQLALCHEMY_DB_URI'] = 'sqlite:///:memory:' # This is also the default value
 db = SQLAlchemy(app)
 
 class User(db.Model):
@@ -48,6 +48,7 @@ def update_user():
 	id = request.form['id']
 	username = request.form['username']
 	password = request.form['password']
+	# Should check if user actually exists among many other things
 	user = User.query.filter_by(id=id).first()
 	user.username = username if username else user.username
 	password_hash = generate_password_hash(request.form['password'], method='sha256')
