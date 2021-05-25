@@ -1,4 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
 <h2>Hello from home.html</h2>
+<h3>Names Loop</h3>
+
+{% for name in names %}
+<p>Name: {{ name }}</p>
+{% endfor %}
+
 {% endblock %}
