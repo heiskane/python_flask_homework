@@ -18,7 +18,8 @@ class Note(db.Model):
 NoteForm = model_form(
 	model=Note,
 	base_class=FlaskForm,
-	db_session=db.session
+	db_session=db.session,
+	field_args=field_args
 )
 
 @app.before_first_request

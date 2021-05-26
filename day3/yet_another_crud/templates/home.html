@@ -1,0 +1,53 @@
+{% set title = "Post stuff to nowhere!" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>New Post</h2>
+<form action="/post" method="POST">
+	{# Feels like there is much more control without the for loop #}
+	{{ form.username.label }}: {{ form.username(placeholder="Username") }}<br>
+	{{ form.post_data.label }}: {{ form.post_data(placeholder="Post Something!") }}<br>
+	{{ form.csrf_token }}
+	<input type="submit">
+</form>
+
+{#
+Two form on the same page gives some issues
+because of duplicate ids and CSRF tokens
+#}
+
+<h2>Update Post By Id</h2>
+<form action="/update" method="POST">
+	{# Apparently id does not have a label or a field #}
+	<label for="id">Id</label>: <input id="id" name="id" placeholder="Post Id" required type="text" value=""><br>
+	{{ form.post_data.label }}: {{ form.post_data(placeholder="Update a Post", id="not_duplicate") }}<br>
+	{{ form.csrf_token(id="csrf2") }}
+	<input type="submit">
+</form>
+
+<h2>All Posts</h2>
+
+<table>
+	<tr>
+		<th>Id</th>
+		<th>Username</th>
+		<th>Post</th>
+		<th>Likes</th>
+		<th></th>
+		<th></th>
+		<th></th>
+	</tr>
+{% for post in posts %}
+	<tr>
+		<td>{{ post.id }}</td>
+		<td>{{ post.username }}</td>
+		<td>{{ post.post_data }}</td>
+		<td>{{ post.likes }}</td>
+		<td><a href="/api/like/{{ post.id }}">like</a></td>
+		<td><a href="/api/dislike/{{ post.id }}">dislike</a></td>
+		<td><a href="/api/delete/{{ post.id }}">delete</a></td>
+	</tr>
+{% endfor %}
+</table>
+
+{% endblock content %}
