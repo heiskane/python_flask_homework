@@ -46,6 +46,7 @@
 		<td>{{ employee.last_name }}</td>
 		<td>{{ employee.email }}</td>
 		<td>
+			{# Use <a> instead to send request to the api endpoint #}
 			<form action="/delete_employee" method="POST">
 				<input type="hidden" name="id" value="{{ employee.id }}">
 				<button>Delete</button>

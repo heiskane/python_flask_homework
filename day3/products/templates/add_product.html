@@ -1,0 +1,13 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<p>Hello Forms</p>
+
+<form method="POST">
+	{% for field in product_form %}
+	<p>{{ field.label }}: {{ field }}</p>
+	{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}
