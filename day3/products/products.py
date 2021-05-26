@@ -1,12 +1,13 @@
 from flask import Flask, render_template, request
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 # python3-flaskext.wtf
 from flask_wtf import FlaskForm
 from wtforms.ext.sqlalchemy.orm import model_form
 
 app = Flask(__name__)
-app.secret_key = '7eX,DHmk^Q)jK7z^c[FU#04]x3tAF(}c'
+app.secret_key = os.urandom(32)
 db = SQLAlchemy(app)
 
 class Product(db.Model):
