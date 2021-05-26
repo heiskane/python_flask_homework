@@ -9,11 +9,11 @@
 		<p>
 		{# https://wtforms.readthedocs.io/en/2.3.x/fields/#wtforms.fields.Field.flags #}
 		{% if not field.flags.hidden %}
-			{{ field.label }}: {{ field(placeholder=field.name) }}
-		{% else %}
-			{# https://betterprogramming.pub/how-to-use-flask-wtforms-faab71d5a034 #}
-			{{ field }}
+			{# Can set placeholder with field(placeholder=field.name) #}
+			{{ field.label }}:
 		{% endif %}
+		{# https://betterprogramming.pub/how-to-use-flask-wtforms-faab71d5a034 #}
+		{{ field }}
 		</p>
 	{% endfor %}
 	<input type="submit">

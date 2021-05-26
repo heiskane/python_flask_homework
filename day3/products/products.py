@@ -2,7 +2,7 @@ from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
-# python3-flaskext.wtf
+# sudo apt install python3-flaskext.wtf
 from flask_wtf import FlaskForm
 from wtforms.ext.sqlalchemy.orm import model_form
 
@@ -18,11 +18,24 @@ class Product(db.Model):
 	price = db.Column(db.Float, nullable=False)
 	category = db.Column(db.String, nullable=True)
 
+# There must be a better way to do this..
+# https://wtforms-alchemy.readthedocs.io/en/latest/configuration.html#modelform-meta-parameters
+placeHolders = {
+	'name': {
+		'render_kw': {'placeholder': 'Full Name'}},
+	'category': {
+		'render_kw': {'placeholder': 'Category'}},
+	'price': {
+		'render_kw': {'placeholder': 'Price'}}
+}
+
 ProductForm = model_form(
 	Product,
 	base_class=FlaskForm,
 	# db_session must be specified or something somewhere breaks for some reason
-	db_session=db.session)
+	db_session=db.session,
+	field_args=placeHolders)
+
 
 @app.before_first_request
 def runMeBoi():
@@ -56,14 +69,11 @@ def add_product():
 	category = request.form['category']
 	price = request.form['price']
 	
-	#if product_form.validate_on_submit():
-	#	flash("Validated")
-	
 	if not name or not category or not price:
 		flash("Missing Required fields", "Error")
 	return render_template('add_product.html', product_form=product_form)
 
-@app.route('/api/stuff')
+@app.route('/api/add_product')
 def api():
 	return "Make API stuff"
 

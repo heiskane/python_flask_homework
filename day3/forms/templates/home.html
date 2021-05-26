@@ -1,0 +1,17 @@
+{% set title = "Note poster" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<form action="/post" method="POST">
+{% for field in form %}
+	{% if not field.flags.hidden %}
+		{{ field.label }}:
+	{% endif %}
+	{# Kinda weird way to handle but csrf should not have a placeholder #}
+	{{ field(placeholder=field.name) if not field.flags.hidden else field }}
+	<br>
+{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}
