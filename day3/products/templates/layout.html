@@ -7,6 +7,13 @@
 	</head>
 	<body>
 		<h1>Hello Wolrd</h1><br>
+		{% with messages = get_flashed_messages(with_categories=True) %}
+			{% if messages %}
+				{% for category, message in messages %}
+					<p><b>{{ category }}:</b> {{ message }}</p>
+				{% endfor %}
+			{% endif %}
+		{% endwith %}
 		{% block content %}{% endblock content %}
 	</body>
 </html>

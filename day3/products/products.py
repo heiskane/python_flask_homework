@@ -55,9 +55,17 @@ def add_product():
 	name = request.form['name']
 	category = request.form['category']
 	price = request.form['price']
+	
+	#if product_form.validate_on_submit():
+	#	flash("Validated")
+	
 	if not name or not category or not price:
-		flash("Missing Required fields")
+		flash("Missing Required fields", "Error")
 	return render_template('add_product.html', product_form=product_form)
+
+@app.route('/api/stuff')
+def api():
+	return "Make API stuff"
 
 if __name__ == "__main__":
 	app.run(debug=True)
