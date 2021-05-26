@@ -5,7 +5,10 @@
 
 <form method="POST">
 	{% for field in product_form %}
-	<p>{{ field.label }}: {{ field }}</p>
+		{# https://wtforms.readthedocs.io/en/2.3.x/fields/#wtforms.fields.Field.flags #}
+		{% if not field.flags.hidden %}
+		<p>{{ field.label }}: {{ field(placeholder=field.name) }}</p>
+		{% endif %}
 	{% endfor %}
 	<input type="submit">
 </form>
