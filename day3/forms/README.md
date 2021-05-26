@@ -1,1 +1,1 @@
-![forms app](forms.png)
+![forms app](poster.png)
