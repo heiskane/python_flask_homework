@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect, flash, url_for
 from flask_sqlalchemy import SQLAlchemy
 import os
 
@@ -11,6 +11,8 @@ app.secret_key = os.urandom(32)
 db = SQLAlchemy(app)
 
 class Product(db.Model):
+	# https://stackoverflow.com/questions/59335949/how-to-add-a-text-field-placeholder-using-wtforms-alchemy
+	# Why does this not work?? ^	
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, nullable=False)
 	price = db.Column(db.Float, nullable=False)
@@ -48,6 +50,13 @@ def home():
 def add_product():
 	product_form = ProductForm()
 	app.logger.info(request.form)
+	if request.method != 'POST':
+		return render_template('add_product.html', product_form=product_form)
+	name = request.form['name']
+	category = request.form['category']
+	price = request.form['price']
+	if not name or not category or not price:
+		flash("Missing Required fields")
 	return render_template('add_product.html', product_form=product_form)
 
 if __name__ == "__main__":
