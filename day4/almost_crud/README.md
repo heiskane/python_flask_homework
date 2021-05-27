@@ -1,0 +1,1 @@
+![Almost CRUD](almost_crud.png)
