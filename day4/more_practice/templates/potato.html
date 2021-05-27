@@ -2,17 +2,10 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<form action="/add_potato" method="POST">
-	{% for field in form %}
-		{{ field.label if not field.flags.hidden }} {{ field }}
-	{% endfor %}
-	<input type="submit">
-</form>
-
 <h2>Potatoes</h2>
 
 {% for potato in potatoes %}
-	<p><b>Potato: </b>{{ potato.name }}</p>
+	<p><b>Potato: </b>{{ potato.name }} - <a href="/add_potato/{{potato.id}}">Edit</a></p>
 {% endfor %}
 
 {% endblock content %}

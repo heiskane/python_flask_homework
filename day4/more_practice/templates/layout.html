@@ -8,7 +8,8 @@
 	<body>
 		<nav>
 			<a href="{{ url_for('home') }}">home</a> -
-			<a href="{{ url_for('potato') }}">potato</a>
+			<a href="{{ url_for('potato') }}">list</a> - 
+			<a href="{{ url_for('add_potato') }}">add potato</a>
 		</nav>
 		<h1>{{ title }}</h1>
 		{% for type, message in get_flashed_messages(with_categories=True) %}

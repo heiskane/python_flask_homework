@@ -30,19 +30,26 @@ def initDB():
 def home():
 	return render_template('home.html')
 
+
 @app.route('/potato')
 def potato():
-	form = PotatoForm()
 	potatoes = Potato.query.all()
-	return render_template('potato.html', form=form, potatoes=potatoes)
+	return render_template('potato.html', potatoes=potatoes)
 
-@app.route('/add_potato', methods=['POST'])
-def add_potato():
-	form = PotatoForm()
-	if not form.validate_on_submit():
-		flash('Field validation failed', 'Error')
-		return redirect(url_for('potato'))
+@app.route('/add_potato/<int:id>', methods=['GET', 'POST'])
+@app.route('/add_potato', methods=['GET', 'POST'])
+def add_potato(id=None):
 	potato = Potato()
+
+	if id:
+		potato = Potato.query.get_or_404(id)
+
+	form = PotatoForm(obj=potato)
+
+	if not form.validate_on_submit():
+		#flash('Field validation failed', 'Error')
+		return render_template('add_potato.html', form=form)
+
 	form.populate_obj(potato)
 	db.session.add(potato)
 	db.session.commit()

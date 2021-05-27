@@ -1,0 +1,12 @@
+{% set title = "Something about potatoes idk" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST">
+	{% for field in form %}
+		{{ field.label if not field.flags.hidden }} {{ field }}
+	{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}
