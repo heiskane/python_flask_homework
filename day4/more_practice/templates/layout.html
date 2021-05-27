@@ -6,6 +6,10 @@
 		<title>{{ title }}</title>
 	</head>
 	<body>
+		<nav>
+			<a href="{{ url_for('home') }}">home</a> -
+			<a href="{{ url_for('potato') }}">potato</a>
+		</nav>
 		<h1>{{ title }}</h1>
 		{% for type, message in get_flashed_messages(with_categories=True) %}
 			<p><b>{{ type }}: </b>{{ message }}</p>
