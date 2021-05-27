@@ -1,0 +1,31 @@
+{% set title = "Client CRUD or something" %}
+{% extends "layout.html" %}
+{% block content %}
+<h2>Look at all these clients</h2>
+
+<table>
+	<tr>
+		<th>Id</th>
+		<th>First Name</th>
+		<th>Last Name</th>
+		<th>Email</th>
+		<th>Phone Number</th>
+		<th></th>
+		<th></th>
+	</tr>
+{% for client in clients %}
+	<tr>
+		<td>{{ client.id }}</td>
+		<td>{{ client.first_name }}</td>
+		<td>{{ client.last_name }}</td>
+		{# If email not provided set to some string #}
+		<td>{{ client.email if client.email else "Not provided" }}</td>
+		<td>{{ client.phone_number }}</td>
+		<td><a href="/register_client/{{ client.id }}">Edit</a></td>
+		<td><a href="/delete_client/{{ client.id }}">Delete</a></td>
+	</tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}

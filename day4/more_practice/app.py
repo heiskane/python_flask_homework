@@ -67,12 +67,10 @@ def delete_potato(id):
 @app.route('/populate')
 def populate():
 	with open('potatoes.txt', 'r') as f:
-		#potatoes = [line.rstrip() for line in f]
 		for line in f:
 			db.session.add(Potato(name=line.rstrip()))
 	
 	db.session.commit()
-
 	return redirect(url_for('potato'))
 
 if __name__ == '__main__':

@@ -1,0 +1,16 @@
+{% set title = "Client Registration" %}
+{% extends "layout.html" %}
+{% block content %}
+<h2>Hello Again</h2>
+
+<form method="POST">
+	{# Doing this without a for loop for more control #}
+	{{ form.first_name.label }}: {{ form.first_name(placeholder="First Name") }}<br>
+	{{ form.last_name.label }}: {{ form.last_name(placeholder="Last Name") }}<br>
+	{{ form.email.label }}: {{ form.email(type="email", placeholder="example@email.com") }}<br>
+	{{ form.phone_number.label }}: {{ form.phone_number(type="number", placeholder="Phone number") }}<br>
+	{{ form.csrf_token }}
+	<input type="submit">
+</form>
+
+{% endblock content %}
