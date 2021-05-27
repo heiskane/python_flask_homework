@@ -1,0 +1,13 @@
+{% set title = "Register a borrowed item" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST">
+	{{ form.item_name.label }}: {{ form.item_name(placeholder="Item Name") }}<br>
+	{{ form.item_type.label }}: {{ form.item_type(placeholder="Item Type") }}<br>
+	{# REMEMBER THE DAMN CSRF TOKEN #}
+	{{ form.csrf_token }}
+	<input type="submit">
+</form>
+
+{% endblock content %}

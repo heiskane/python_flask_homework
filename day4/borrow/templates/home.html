@@ -1,0 +1,29 @@
+{% set title = "Borrowed Items" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<table>
+	<tr>
+		<th>Id</th>
+		<th>Name</th>
+		<th>Type</th>
+		<th>Borrow Date</th>
+		<th>Returned</th>
+		<th></th>
+		<th></th>
+	</tr>
+{% for item in items %}
+	<tr>
+		<td>{{ item.id }}</td>
+		<td>{{ item.item_name }}</td>
+		<td>{{ item.item_type }}</td>
+		<td>{{ item.borrow_date }}</td>
+		<td><a href="/returned/{{ item.id }}">{{ item.returned }}</a></td>
+		<td><a href="/add_item/{{ item.id }}">Edit</a></td>
+		<td><a href="/delete_item/{{ item.id }}">Delete</a></td>
+	</tr>
+{% endfor %}
+</table>
+
+
+{% endblock content %}
