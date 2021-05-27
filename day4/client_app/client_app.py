@@ -66,6 +66,7 @@ def delete_client(id):
 	client = Client.query.get_or_404(id)
 	db.session.delete(client)
 	db.session.commit()
+	flash("Client info deleted", "Message")
 	return redirect(url_for('home'))
 
 if __name__ == '__main__':
