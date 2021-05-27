@@ -14,6 +14,7 @@ class Thing(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, nullable=False)
 
+# https://terokarvinen.com/2020/flask-automatic-forms/?fromSearch=
 ThingForm = model_form(
 	model=Thing,
 	db_session=db.session,
