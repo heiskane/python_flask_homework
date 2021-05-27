@@ -56,5 +56,13 @@ def add_potato(id=None):
 	flash('Added potato', 'Message')
 	return redirect(url_for('potato'))
 
+@app.route('/delete_potato/<int:id>')
+def delete_potato(id):
+	potato = Potato.query.get_or_404(id)
+	db.session.delete(potato)
+	db.session.commit()
+	flash("Potato deleted", 'Message')
+	return redirect(url_for('potato'))
+
 if __name__ == '__main__':
 	app.run(debug=True)

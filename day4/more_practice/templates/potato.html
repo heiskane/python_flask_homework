@@ -5,7 +5,7 @@
 <h2>Potatoes</h2>
 
 {% for potato in potatoes %}
-	<p><b>Potato: </b>{{ potato.name }} - <a href="/add_potato/{{potato.id}}">Edit</a></p>
+	<p><b>Potato: </b>{{ potato.name }} - <a href="/add_potato/{{ potato.id }}">Edit</a> - <a href="/delete_potato/{{ potato.id }}">Delete</a></p>
 {% endfor %}
 
 {% endblock content %}
