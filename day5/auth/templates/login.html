@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST">
+	{% for field in user_form %}
+		{% for err in field.errors %}
+			<p>{{ err }}</p>
+		{% endfor %}
+		{# Just trying my options. This seems waaay too complicated tbh #}
+		{{ field.label if not field.flags.hidden and field.flags.required }}
+		{{ field if field.flags.required or field.flags.hidden }}<br>
+	{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}

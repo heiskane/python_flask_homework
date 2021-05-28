@@ -1,0 +1,11 @@
+{% set title = "Book161" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<h2>Books</h2>
+
+{% for book in books %}
+	<p>{{ book.name }}</p>
+{% endfor %}
+
+{% endblock %}
