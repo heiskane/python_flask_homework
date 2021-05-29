@@ -9,6 +9,10 @@
 		<nav>
 			<a href="{{ url_for('home') }}">Home</a> - 
 			<a href="{{ url_for('login') }}">Login</a> -
+			{# https://flask-login.readthedocs.io/en/latest/ #}
+			{% if current_user.is_authenticated %}
+				<a href="{{ url_for('profile_page', username=current_user.username) }}">Profile</a> -
+			{% endif %}
 			<a href="{{ url_for('register_user') }}">Register</a>
 		</nav>
 		<h1>{{ title }}</h1>

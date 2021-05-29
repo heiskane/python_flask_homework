@@ -26,7 +26,10 @@ class User(db.Model):
 	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True)
 	password_hash = db.Column(db.String, nullable=False)
+	# Not sure if i need to set nullable if i have a default value 
 	authenticated = db.Column(db.Boolean, default=False)
+	# Implement admin stuff later
+	is_admin = db.Column(db.Boolean, default=False)
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
@@ -35,6 +38,7 @@ class User(db.Model):
 		return check_password_hash(self.password_hash, password)
 
 	# Not sure why flask login needs a method to get the authenticated attribute
+	# Maybe it uses a method so i can do more fancy stuff with it
 	def is_authenticated(self):
 		return self.authenticated
 
@@ -112,6 +116,13 @@ def register_user():
 	app.logger.info("New user registered with the name: " + username)
 	login_user(user)
 	return redirect(url_for('home'))
+
+# string here does not accept slashes so maybe use 'path' instead
+# I guess use string for now but i will have to add illegal chars to usernames
+@app.route('/profile/<string:username>')
+# Add a login requirement later
+def profile_page(username):
+	return render_template('user_profile.html', username=username)
 
 if __name__ == '__main__':
 	app.run(debug=True)
