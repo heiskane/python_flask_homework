@@ -5,7 +5,9 @@
 <h2>Books</h2>
 
 {% for book in books %}
-	<p>{{ book.name }}</p>
+	<h3>Name: {{ book.name }}</h3><br>
+	<p>Description: {{ book.description }}</p>
+	<hr>
 {% endfor %}
 
 {% endblock %}

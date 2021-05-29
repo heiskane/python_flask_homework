@@ -98,7 +98,6 @@ def unauthorized():
 	return redirect(url_for('login'))
 
 @app.route('/')
-@login_required
 def home():
 	books = Book.query.all()
 	return render_template('home.html', books=books)
@@ -121,6 +120,7 @@ def login():
 
 	login_user(user)
 	app.logger.info("User logged in")
+	# Find a way to redirect user back where he came from if it was on the site
 	return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -140,7 +140,21 @@ def register():
 	user.set_password(user_form.password.data)
 	db.session.add(user)
 	db.session.commit()
-	return redirect(url_for('login'))
+	login_user(user)
+	return redirect(url_for('home'))
+
+@app.route('/add_book', methods=['GET', 'POST'])
+@login_required
+def add_book():
+	book_form = BookForm()
+	if not book_form.validate_on_submit():
+		app.logger.info("Form did not validate")
+		return render_template('add_book.html', book_form=book_form)
+	book = Book()
+	book_form.populate_obj(book)
+	db.session.add(book)
+	db.session.commit()
+	return redirect(url_for('home'))
 
 if __name__ == '__main__':
 	app.run(debug=True)

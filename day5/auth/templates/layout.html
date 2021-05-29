@@ -9,7 +9,8 @@
 		<nav>
 			<a href="{{ url_for('home') }}">Home</a> - 
 			<a href="{{ url_for('login') }}">Login</a> - 
-			<a href="{{ url_for('register') }}">Register</a>
+			<a href="{{ url_for('register') }}">Register</a> -
+			<a href="{{ url_for('add_book') }}">Add Book</a>
 		</nav>
 		<h1>{{ title }}</h1>
 		{% for message in get_flashed_messages() %}
