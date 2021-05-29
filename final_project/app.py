@@ -23,6 +23,7 @@ login_manager.init_app(app)
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String, nullable=False, unique=True)
+	description = db.Column(db.String(160), nullable=True)
 	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True)
 	password_hash = db.Column(db.String, nullable=False)
@@ -66,6 +67,8 @@ def initialize_database():
 	app.logger.info("Database initialized")
 	db.session.add(User(
 		username="heiskane",
+		is_admin=True,
+		description="The admin man guy",
 		email="asd@asd.asd",
 		password_hash=generate_password_hash("asd")))
 	db.session.commit()
@@ -122,7 +125,8 @@ def register_user():
 @app.route('/profile/<string:username>')
 # Add a login requirement later
 def profile_page(username):
-	return render_template('user_profile.html', username=username)
+	user = user_loader(username)
+	return render_template('user_profile.html', user=user)
 
 if __name__ == '__main__':
 	app.run(debug=True)

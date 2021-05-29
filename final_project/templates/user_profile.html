@@ -1,7 +1,10 @@
-{% set title = username + "'s Profile Page" %}
+{% set title = user.username + "'s Profile Page" %}
 {% extends "layout.html" %}
 {% block content %}
 
-<h2>This will be your profile</h2>
+<h2>This will be someones profile</h2>
+
+<p>Description: {{ user.description }}</p>
+<p>Admin: {{ user.is_admin }}</p>
 
 {% endblock content %}
