@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash
+from flask import Flask, render_template, url_for, redirect, flash, request
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
@@ -82,7 +82,9 @@ def user_loader(username):
 @login_manager.unauthorized_handler
 def unauthorized():
 	flash("Please login first")
-	return redirect(url_for('login'))
+	# https://stackoverflow.com/questions/36269485/how-do-i-pass-through-the-next-url-with-flask-and-flask-login
+	destination = url_for(request.endpoint,**request.view_args)
+	return redirect(url_for('login', next=destination))
 
 @app.route('/')
 @login_required
@@ -99,6 +101,9 @@ def login():
 		flash("Login failed")
 		return redirect(url_for('login'))
 	login_user(user)
+	destination = request.args.get('next')
+	if destination:
+		return redirect(destination)
 	return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -123,10 +128,15 @@ def register_user():
 # string here does not accept slashes so maybe use 'path' instead
 # I guess use string for now but i will have to add illegal chars to usernames
 @app.route('/profile/<string:username>')
-# Add a login requirement later
+@login_required
 def profile_page(username):
 	user = user_loader(username)
 	return render_template('user_profile.html', user=user)
+
+@app.route('/forgot_password')
+def forgot_password():
+	flash("Get a password manager :)")
+	return redirect(url_for('login'))
 
 if __name__ == '__main__':
 	app.run(debug=True)
