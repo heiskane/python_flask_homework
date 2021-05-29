@@ -5,6 +5,9 @@ from flask_wtf import FlaskForm
 from wtforms.ext.sqlalchemy.orm import model_form
 from wtforms import PasswordField, StringField, validators
 
+# https://github.com/heiskane/python_flask_homework/blob/main/day5/auth/auth_app.py
+from flask_login import login_manager, login_user, login_required, LoginManager
+
 # https://stackoverflow.com/questions/25324113/email-validation-from-wtform-using-flask
 from wtforms.fields.html5 import EmailField
 
@@ -14,18 +17,36 @@ app = Flask(__name__)
 app.secret_key = urandom(32)
 db = SQLAlchemy(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String, nullable=False, unique=True)
 	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True)
 	password_hash = db.Column(db.String, nullable=False)
+	authenticated = db.Column(db.Boolean, default=False)
 
 	def set_password(self, password):
 		self.password_hash = generate_password_hash(password)
 
 	def check_password(self, password):
 		return check_password_hash(self.password_hash, password)
+
+	# Not sure why flask login needs a method to get the authenticated attribute
+	def is_authenticated(self):
+		return self.authenticated
+
+	def get_id(self):
+		return self.username
+
+	# Check if this needs to be in the db to actually work.
+	# Probably yes. Implement like the is_authenticated method
+	is_active = True
+
+	# Flask-Login wants this for something im not using
+	is_anonymous = False
 
 class UserForm(FlaskForm):
 	username = StringField(label="Username", render_kw={
@@ -46,7 +67,18 @@ def initialize_database():
 	db.session.commit()
 	app.logger.info("First user added")
 
+@login_manager.user_loader
+def user_loader(username):
+	return User.query.filter_by(username=username).first()
+
+# https://github.com/heiskane/python_flask_homework/blob/main/day5/auth/auth_app.py
+@login_manager.unauthorized_handler
+def unauthorized():
+	flash("Please login first")
+	return redirect(url_for('login'))
+
 @app.route('/')
+@login_required
 def home():
 	return render_template('home.html')
 
@@ -59,6 +91,7 @@ def login():
 	if not user or not user.check_password(user_form.password.data):
 		flash("Login failed")
 		return redirect(url_for('login'))
+	login_user(user)
 	return redirect(url_for('home'))
 
 @app.route('/register', methods=['GET', 'POST'])
@@ -77,6 +110,7 @@ def register_user():
 	db.session.add(user)
 	db.session.commit()
 	app.logger.info("New user registered with the name: " + username)
+	login_user(user)
 	return redirect(url_for('home'))
 
 if __name__ == '__main__':
