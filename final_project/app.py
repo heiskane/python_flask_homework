@@ -16,6 +16,7 @@ db = SQLAlchemy(app)
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	username = db.Column(db.String, nullable=False, unique=True)
+	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True)
 	password_hash = db.Column(db.String, nullable=False)
 
@@ -31,7 +32,7 @@ class UserForm(FlaskForm):
 		}, validators=[validators.length(4, 18)])
 	email = EmailField(label="Email", validators=[validators.Email()])
 	# Not sure whats the difference between InputRequired() and DataRequired()
-	password = StringField(label="Password", validators=[validators.InputRequired()])
+	password = PasswordField(label="Password", validators=[validators.InputRequired()])
 
 @app.before_first_request
 def initialize_database():
@@ -61,7 +62,22 @@ def login():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
-	return "asd"
+	user_form = UserForm()
+	if not user_form.validate_on_submit():
+		return render_template('register.html', user_form=user_form)
+	username = user_form.username.data
+	if User.query.filter_by(username=username).first():
+		flash("Username taken")
+		return redirect(url_for('register_user'))
+	email = user_form.email.data
+	user = User(
+		username=username,
+		email=email)
+	user.set_password(user_form.password.data)
+	app.logger.info("New user registered with the name: " + username)
+	db.session.add(user)
+	db.session.commit()
+	return redirect(url_for('home'))
 
 if __name__ == '__main__':
 	app.run(debug=True)
