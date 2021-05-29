@@ -1,0 +1,15 @@
+{% set title = "Login" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST">
+	{% for field in user_form %}
+		{% for err in field.errors %}
+			<p>{{ err }}</p>
+		{% endfor %}
+		{{ field.label if not field.flags.hidden }} {{ field }}<br>
+	{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}
