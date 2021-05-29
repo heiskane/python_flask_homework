@@ -7,6 +7,7 @@ from wtforms import PasswordField, StringField, validators
 
 # https://stackoverflow.com/questions/25324113/email-validation-from-wtform-using-flask
 from wtforms.fields.html5 import EmailField
+
 from os import urandom
 
 app = Flask(__name__)
@@ -30,7 +31,7 @@ class UserForm(FlaskForm):
 	username = StringField(label="Username", render_kw={
 		'placeholder': 'Username'
 		}, validators=[validators.length(4, 18)])
-	email = EmailField(label="Email", validators=[validators.Email()])
+	email = EmailField(label="Email", validators=[validators.Email(), validators.Optional()])
 	# Not sure whats the difference between InputRequired() and DataRequired()
 	password = PasswordField(label="Password", validators=[validators.InputRequired()])
 
@@ -69,14 +70,13 @@ def register_user():
 	if User.query.filter_by(username=username).first():
 		flash("Username taken")
 		return redirect(url_for('register_user'))
-	email = user_form.email.data
 	user = User(
 		username=username,
-		email=email)
+		email=user_form.email.data)
 	user.set_password(user_form.password.data)
-	app.logger.info("New user registered with the name: " + username)
 	db.session.add(user)
 	db.session.commit()
+	app.logger.info("New user registered with the name: " + username)
 	return redirect(url_for('home'))
 
 if __name__ == '__main__':
