@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash, request, abort
+from flask import Flask, render_template, url_for, redirect, flash, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
@@ -13,10 +13,18 @@ from wtforms.fields.html5 import EmailField
 
 from os import urandom
 
-# TODO: add logout button
+# TODO: Fill the homepage
+# TODO: Add room adding feature
+# TODO: Private rooms that allow certain users?
+# TODO: Have javascript ask for messages to put on screen every x seconds
 # TODO: fix method not allowed in send_message after redirect from login
 # TODO: add the ability to create rooms
 # TODO: user bans?
+# TODO: look into having 2 users in 2 diffrent tabs acting weird
+#		This happens when you have user 1 send a message in tab one
+#		and user 2 send a message in tab 2
+#		suddenly both tabs have the same user??
+#		Maybe its fine tho
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
@@ -183,17 +191,26 @@ def profile_page(username):
 
 @app.route('/chat_room/<string:room_name>')
 def chat_room(room_name):
-	# Make api endpoint that gives messages as json for some javascript or something
 	room = ChatRoom.query.filter_by(name=room_name).first()
 	if not room:
 		abort(404)
 	messages = Message.query.filter_by(room_id=room.id)
 	message_form = MessageForm()
 	message_form.room_id.data = room.id
-	#if not current_user.is_anonymous:
-	#	message_form.sender_id.data = current_user.id
-	#message_form.sender_id.data = 1 # maybe setup an anonymous user
-	return render_template('chat_room.html', messages=messages, room=room, message_form=message_form)
+	# maybe setup an anonymous user to use current_user.is_anonymous
+	return render_template('chat_room.html', messages=messages, message_form=message_form)
+
+@app.route('/get_messages/<int:room_id>')
+def get_messages(room_id):
+	room = ChatRoom.query.get(room_id)
+	messages = Message.query.filter_by(room_id=room_id)
+	message_list = []
+	for message in messages:
+		sender = User.query.get(message.sender_id).username
+		message_list.append({
+			'sender': f'{sender}',
+			'content': f'{message.content}'})
+	return jsonify(message_list)
 
 @app.route('/chat_rooms')
 def chat_rooms():

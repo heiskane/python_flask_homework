@@ -2,15 +2,44 @@
 {% extends "layout.html" %}
 {% block content %}
 
+{#
 {% for message in messages %}
-	<p>{{ message.content }}</p>
+	<p>{{ message.sender_id }} {{ message.content }}</p>
 {% endfor %}
+#}
 
-<form method="POST" action="{{ url_for('send_message', room_id=room.id) }}">
+<div id="messages"></div>
+<form method="POST" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
 	<input type="submit">
 </form>
+
+
+<script>
+
+	function getMessages() {
+		fetch('/get_messages/{{ message_form.room_id.data }}')
+			.then(response => response.json())
+			.then(messages => {
+				let messageList = ""
+				for (let i = 0; i < messages.length; i++) {
+					let sender = messages[i].sender;
+					let content = messages[i].content;
+					messageList +=
+						"<p><b>" + sender + ": </b>" + content + "</p>"
+				}
+				document.getElementById("messages").innerHTML = messageList
+			});
+	}
+
+	window.addEventListener('load', (event) => {
+		getMessages();
+	});
+
+	{# https://www.codegrepper.com/code-examples/javascript/javascript+request+every+second #}
+	setInterval(getMessages, 5000 /* milliseconds */ );
+</script>
 
 {% endblock content %}
