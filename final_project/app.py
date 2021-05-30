@@ -38,8 +38,8 @@ class User(db.Model):
 	username = db.Column(db.String, nullable=False, unique=True)
 	description = db.Column(db.String(160), nullable=True)
 	# Dont know if i want email to be required
-	email = db.Column(db.String, nullable=True)
-	messages = db.relationship('Message')
+	email = db.Column(db.String, nullable=True) # set to unique after testing
+	messages = db.relationship('Message', backref='sender')
 	password_hash = db.Column(db.String, nullable=False)
 	# Not sure if i need to set nullable if i have a default value 
 	authenticated = db.Column(db.Boolean, default=False)
@@ -81,7 +81,7 @@ class ChatRoom(db.Model):
 	# I think table name defauts to 'chat_room'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, unique=True, nullable=False)
-	messages = db.relationship('Message')
+	messages = db.relationship('Message', backref='room')
 
 class Message(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -112,14 +112,9 @@ def initialize_database():
 	db.session.add(chat_room)
 	db.session.commit()
 
-	message = Message(content="Welcome to a chat room", room_id=chat_room.id, sender_id=user.id)
+	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
 	db.session.add(message)
 	db.session.commit()
-
-	# Usage:
-	#db.session.add(Message(content="potato", parent_id=room.id))
-	#chat = ChatRoom.query.filter_by(name="test").first()
-	#messages = Message.query.filter_by(parent_id=chat.id).first()
 
 
 @login_manager.user_loader
@@ -194,7 +189,8 @@ def chat_room(room_name):
 	room = ChatRoom.query.filter_by(name=room_name).first()
 	if not room:
 		abort(404)
-	messages = Message.query.filter_by(room_id=room.id)
+	# https://www.youtube.com/watch?v=juPQ04_twtA
+	messages = room.messages
 	message_form = MessageForm()
 	message_form.room_id.data = room.id
 	# maybe setup an anonymous user to use current_user.is_anonymous
@@ -203,12 +199,10 @@ def chat_room(room_name):
 @app.route('/get_messages/<int:room_id>')
 def get_messages(room_id):
 	room = ChatRoom.query.get(room_id)
-	messages = Message.query.filter_by(room_id=room_id)
 	message_list = []
-	for message in messages:
-		sender = User.query.get(message.sender_id).username
+	for message in room.messages:
 		message_list.append({
-			'sender': f'{sender}',
+			'sender': f'{message.sender.username}',
 			'content': f'{message.content}'})
 	return jsonify(message_list)
 
