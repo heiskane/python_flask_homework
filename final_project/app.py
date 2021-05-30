@@ -26,6 +26,7 @@ class User(db.Model):
 	description = db.Column(db.String(160), nullable=True)
 	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True)
+	messages = db.relationship('Message')
 	password_hash = db.Column(db.String, nullable=False)
 	# Not sure if i need to set nullable if i have a default value 
 	authenticated = db.Column(db.Boolean, default=False)
@@ -70,11 +71,12 @@ class ChatRoom(db.Model):
 	# I think table name defauts to 'chat_room.id'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, unique=True, nullable=False)
-	children = db.relationship('Message')
+	messages = db.relationship('Message')
 
 class Message(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
+	sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	content = db.Column(db.String, nullable=False)
 
 @app.before_first_request
@@ -82,12 +84,13 @@ def initialize_database():
 	db.create_all()
 	app.logger.info("Database initialized")
 
-	db.session.add(User(
+	user = User(
 		username="heiskane",
 		is_admin=True,
 		description="The admin man guy",
 		email="asd@asd.asd",
-		password_hash=generate_password_hash("asd")))
+		password_hash=generate_password_hash("asd"))
+	db.session.add(user)
 	db.session.commit()
 	app.logger.info("First user added")
 
@@ -95,7 +98,7 @@ def initialize_database():
 	db.session.add(chat_room)
 	db.session.commit()
 
-	message = Message(content="Welcome to a chat room", room_id=chat_room.id)
+	message = Message(content="Welcome to a chat room", room_id=chat_room.id, sender_id=user.id)
 	db.session.add(message)
 	db.session.commit()
 
