@@ -1,0 +1,10 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<p>Chat Room</p>
+
+{% for message in messages %}
+	<p>{{ message.content }}</p>
+{% endfor %}
+
+{% endblock content %}

@@ -61,10 +61,27 @@ class UserForm(FlaskForm):
 	# Not sure whats the difference between InputRequired() and DataRequired()
 	password = PasswordField(label="Password", validators=[validators.InputRequired()])
 
+# https://stackoverflow.com/questions/41569206/flask-sqlalchemy-foreign-key-relationships
+# https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
+# Add chat room feature??
+# Do i need many-to-one or one-to-many ??
+
+class ChatRoom(db.Model):
+	# I think table name defauts to 'chat_room.id'
+	id = db.Column(db.Integer, primary_key=True)
+	name = db.Column(db.String, unique=True, nullable=False)
+	children = db.relationship('Message')
+
+class Message(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
+	content = db.Column(db.String, nullable=False)
+
 @app.before_first_request
 def initialize_database():
 	db.create_all()
 	app.logger.info("Database initialized")
+
 	db.session.add(User(
 		username="heiskane",
 		is_admin=True,
@@ -73,6 +90,20 @@ def initialize_database():
 		password_hash=generate_password_hash("asd")))
 	db.session.commit()
 	app.logger.info("First user added")
+
+	chat_room = ChatRoom(name="Welcome")
+	db.session.add(chat_room)
+	db.session.commit()
+
+	message = Message(content="Welcome to a chat room", room_id=chat_room.id)
+	db.session.add(message)
+	db.session.commit()
+
+	# Usage:
+	#db.session.add(Message(content="potato", parent_id=room.id))
+	#chat = ChatRoom.query.filter_by(name="test").first()
+	#messages = Message.query.filter_by(parent_id=chat.id).first()
+
 
 @login_manager.user_loader
 def user_loader(username):
@@ -132,6 +163,12 @@ def register_user():
 def profile_page(username):
 	user = user_loader(username)
 	return render_template('user_profile.html', user=user)
+
+@app.route('/chat_room/<string:room_name>')
+def chat_room(room_name):
+	chat_room = ChatRoom.query.filter_by(name=room_name).first()
+	messages = Message.query.filter_by(room_id=chat_room.id)
+	return render_template('chat_room.html', messages=messages)
 
 @app.route('/forgot_password')
 def forgot_password():
