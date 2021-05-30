@@ -13,6 +13,11 @@ from wtforms.fields.html5 import EmailField
 
 from os import urandom
 
+# TODO: add logout button
+# TODO: fix method not allowed in send_message after redirect from login
+# TODO: add the ability to create rooms
+# TODO: user bans?
+
 app = Flask(__name__)
 app.secret_key = urandom(32)
 db = SQLAlchemy(app)
@@ -64,11 +69,8 @@ class UserForm(FlaskForm):
 
 # https://stackoverflow.com/questions/41569206/flask-sqlalchemy-foreign-key-relationships
 # https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html
-# Add chat room feature??
-# Do i need many-to-one or one-to-many ??
-
 class ChatRoom(db.Model):
-	# I think table name defauts to 'chat_room.id'
+	# I think table name defauts to 'chat_room'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, unique=True, nullable=False)
 	messages = db.relationship('Message')
@@ -177,6 +179,8 @@ def profile_page(username):
 def chat_room(room_name):
 	# Make api endpoint that gives messages as json for some javascript or something
 	room = ChatRoom.query.filter_by(name=room_name).first()
+	if not room:
+		abort(404)
 	messages = Message.query.filter_by(room_id=room.id)
 	message_form = MessageForm()
 	message_form.room_id.data = room.id
@@ -190,7 +194,7 @@ def chat_rooms():
 	rooms = ChatRoom.query.all()
 	return render_template('chat_rooms.html', rooms=rooms)
 
-@app.route('/<int:room_id>/send_message', methods=['POST'])
+@app.route('/<int:room_id>/send_message', methods=['GET', 'POST'])
 @login_required
 def send_message(room_id):
 	user = current_user
@@ -198,13 +202,16 @@ def send_message(room_id):
 	if not message_form.validate_on_submit():
 		flash("Something went wrong sending the message")
 		return redirect(request.referrer)
-	# Check if room exists here later
+	room = ChatRoom.query.get(message_form.room_id.data)
+	if not room:
+		abort(404)
 	db.session.add(Message(
-		room_id = message_form.room_id.data,
+		room_id = room.id,
 		sender_id = user.id,
 		content = message_form.content.data))
 	db.session.commit()
 	return redirect(request.referrer)
+	#return redirect(url_for('chat_room', room_id=room_id))
 
 @app.route('/forgot_password')
 def forgot_password():
