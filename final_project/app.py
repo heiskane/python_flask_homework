@@ -6,7 +6,7 @@ from wtforms.ext.sqlalchemy.orm import model_form
 from wtforms import PasswordField, StringField, validators, IntegerField, HiddenField
 
 # https://github.com/heiskane/python_flask_homework/blob/main/day5/auth/auth_app.py
-from flask_login import login_manager, login_user, login_required, LoginManager, current_user
+from flask_login import login_manager, login_user, login_required, LoginManager, current_user, logout_user
 
 # https://stackoverflow.com/questions/25324113/email-validation-from-wtform-using-flask
 from wtforms.fields.html5 import EmailField
@@ -127,7 +127,6 @@ def unauthorized():
 	return redirect(url_for('login', next=destination))
 
 @app.route('/')
-@login_required
 def home():
 	return render_template('home.html')
 
@@ -145,6 +144,13 @@ def login():
 	if destination:
 		return redirect(destination)
 	return redirect(url_for('home'))
+
+# https://flask-login.readthedocs.io/en/latest/
+@app.route('/logout')
+@login_required
+def logout():
+	logout_user()
+	return redirect(url_for('login'))
 
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():

@@ -9,9 +9,9 @@
 		{% endfor %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
+	<a href="{{ url_for('forgot_password') }}">Forgot password?</a><br>
 	<input type="submit">
 </form>
 
-<a href="{{ url_for('forgot_password') }}">Forgot password?</a>
 
 {% endblock content %}
