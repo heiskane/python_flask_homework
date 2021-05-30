@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash, request
+from flask import Flask, render_template, url_for, redirect, flash, request, abort
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
@@ -158,10 +158,12 @@ def register_user():
 
 # string here does not accept slashes so maybe use 'path' instead
 # I guess use string for now but i will have to add illegal chars to usernames
-@app.route('/profile/<string:username>')
+@app.route('/user/<string:username>')
 @login_required
 def profile_page(username):
 	user = user_loader(username)
+	if not user:
+		abort(404)
 	return render_template('user_profile.html', user=user)
 
 @app.route('/chat_room/<string:room_name>')
