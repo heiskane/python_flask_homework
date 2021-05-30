@@ -1,0 +1,9 @@
+{% set title = "Chat Rooms" %}
+{% extends "layout.html" %}
+{% block content %}
+
+{% for room in rooms %}
+	<a href="{{ url_for('chat_room', room_name=room.name) }}">{{ room.name }}</a>
+{% endfor %}
+
+{% endblock content %}

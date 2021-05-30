@@ -12,9 +12,10 @@
 			{# https://flask-login.readthedocs.io/en/latest/ #}
 			{% if current_user.is_authenticated %}
 				<a href="{{ url_for('profile_page', username=current_user.username) }}">Profile</a> -
+			{% else %}
+				<a href="{{ url_for('register_user') }}">Register</a> -
 			{% endif %}
-			<a href="{{ url_for('chat_room', room_name='Welcome') }}">Chat</a> -
-			<a href="{{ url_for('register_user') }}">Register</a>
+			<a href="{{ url_for('chat_rooms') }}">Chat Rooms</a>
 		</nav>
 		<h1>{{ title }}</h1>
 		{% for message in get_flashed_messages() %}
