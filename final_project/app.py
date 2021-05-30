@@ -3,10 +3,10 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
 from wtforms.ext.sqlalchemy.orm import model_form
-from wtforms import PasswordField, StringField, validators
+from wtforms import PasswordField, StringField, validators, IntegerField, HiddenField
 
 # https://github.com/heiskane/python_flask_homework/blob/main/day5/auth/auth_app.py
-from flask_login import login_manager, login_user, login_required, LoginManager
+from flask_login import login_manager, login_user, login_required, LoginManager, current_user
 
 # https://stackoverflow.com/questions/25324113/email-validation-from-wtform-using-flask
 from wtforms.fields.html5 import EmailField
@@ -78,6 +78,10 @@ class Message(db.Model):
 	room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
 	sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	content = db.Column(db.String, nullable=False)
+
+class MessageForm(FlaskForm):
+	room_id = HiddenField(label="room_id", validators=[validators.DataRequired()])
+	content = StringField(label="Message", validators=[validators.DataRequired()])
 
 @app.before_first_request
 def initialize_database():
@@ -171,9 +175,36 @@ def profile_page(username):
 
 @app.route('/chat_room/<string:room_name>')
 def chat_room(room_name):
-	chat_room = ChatRoom.query.filter_by(name=room_name).first()
-	messages = Message.query.filter_by(room_id=chat_room.id)
-	return render_template('chat_room.html', messages=messages)
+	# Make api endpoint that gives messages as json for some javascript or something
+	room = ChatRoom.query.filter_by(name=room_name).first()
+	messages = Message.query.filter_by(room_id=room.id)
+	message_form = MessageForm()
+	message_form.room_id.data = room.id
+	#if not current_user.is_anonymous:
+	#	message_form.sender_id.data = current_user.id
+	#message_form.sender_id.data = 1 # maybe setup an anonymous user
+	return render_template('chat_room.html', messages=messages, room=room, message_form=message_form)
+
+@app.route('/chat_rooms')
+def chat_rooms():
+	rooms = ChatRoom.query.all()
+	return render_template('chat_rooms.html', rooms=rooms)
+
+@app.route('/<int:room_id>/send_message', methods=['POST'])
+@login_required
+def send_message(room_id):
+	user = current_user
+	message_form = MessageForm()
+	if not message_form.validate_on_submit():
+		flash("Something went wrong sending the message")
+		return redirect(request.referrer)
+	# Check if room exists here later
+	db.session.add(Message(
+		room_id = message_form.room_id.data,
+		sender_id = user.id,
+		content = message_form.content.data))
+	db.session.commit()
+	return redirect(request.referrer)
 
 @app.route('/forgot_password')
 def forgot_password():

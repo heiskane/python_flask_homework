@@ -1,10 +1,16 @@
+{# add title somewhere #}
 {% extends "layout.html" %}
 {% block content %}
-
-<p>Chat Room</p>
 
 {% for message in messages %}
 	<p>{{ message.content }}</p>
 {% endfor %}
+
+<form method="POST" action="{{ url_for('send_message', room_id=room.id) }}">
+	{% for field in message_form %}
+		{{ field.label if not field.flags.hidden }} {{ field }}<br>
+	{% endfor %}
+	<input type="submit">
+</form>
 
 {% endblock content %}
