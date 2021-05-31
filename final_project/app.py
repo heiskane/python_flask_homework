@@ -14,10 +14,8 @@ from wtforms.fields.html5 import EmailField
 from os import urandom
 
 # TODO: Fill the homepage
-# TODO: Add room adding feature
 # TODO: Private rooms that allow certain users?
 # TODO: fix method not allowed in send_message after redirect from login
-# TODO: add the ability to create rooms
 # TODO: user bans?
 # TODO: look into having 2 users in 2 diffrent tabs acting weird
 #		This happens when you have user 1 send a message in tab one
