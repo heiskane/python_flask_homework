@@ -1,0 +1,71 @@
+.content {
+	margin: auto;
+	padding: 15px;
+	margin-top: 30px;
+	background-color: #b3b3b3;
+	max-width: 80%;
+}
+
+.content h1 {
+	text-align: center;
+}
+
+/* Yoink
+https://www.w3schools.com/css/css_navbar_horizontal.asp
+*/
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+}
+
+li {
+  float: left;
+}
+
+li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+}
+
+li a:hover:not(.active) {
+	background-color: #111;
+}
+
+.active {
+	background-color: #04AA6D;
+}
+
+
+/*
+Yoink
+https://www.w3schools.com/css/css_table.asp
+*/
+table {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+table td, table th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #333;
+  color: white;
+}

@@ -7,8 +7,13 @@
 		{% for err in field.errors %}
 			<p>{{ err }}</p>
 		{% endfor %}
-		{{ field.label if not field.flags.hidden }} {{ field }}<br>
+		{#{{ field.label if not field.flags.hidden }} {{ field }}<br>#}
 	{% endfor %}
+
+	{# More control without a for loop here #}
+	{{ user_form.username.label }} {{ user_form.username }}<br>
+	{{ user_form.password.label }} {{ user_form.password }}<br>
+	{{ user_form.csrf_token }}
 	<a href="{{ url_for('forgot_password') }}">Forgot password?</a><br>
 	<input type="submit">
 </form>

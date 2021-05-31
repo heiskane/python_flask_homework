@@ -1,4 +1,4 @@
-from flask import Flask, render_template, url_for, redirect, flash, request, abort, jsonify
+from flask import Flask, render_template, url_for, redirect, flash, request, abort, jsonify, escape
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_wtf import FlaskForm
@@ -16,7 +16,6 @@ from os import urandom
 # TODO: Fill the homepage
 # TODO: Add room adding feature
 # TODO: Private rooms that allow certain users?
-# TODO: Have javascript ask for messages to put on screen every x seconds
 # TODO: fix method not allowed in send_message after redirect from login
 # TODO: add the ability to create rooms
 # TODO: user bans?
@@ -28,6 +27,7 @@ from os import urandom
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///niko'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -40,6 +40,7 @@ class User(db.Model):
 	# Dont know if i want email to be required
 	email = db.Column(db.String, nullable=True) # set to unique after testing
 	messages = db.relationship('Message', backref='sender')
+	rooms = db.relationship('ChatRoom', backref='owner')
 	password_hash = db.Column(db.String, nullable=False)
 	# Not sure if i need to set nullable if i have a default value 
 	authenticated = db.Column(db.Boolean, default=False)
@@ -71,7 +72,9 @@ class UserForm(FlaskForm):
 	username = StringField(label="Username", render_kw={
 		'placeholder': 'Username'
 		}, validators=[validators.length(4, 18)])
-	email = EmailField(label="Email", validators=[validators.Email(), validators.Optional()])
+	email = EmailField(label="Email", render_kw={
+		'placeholder': 'potato@example.com (Optional)'
+		}, validators=[validators.Email(), validators.Optional()])
 	# Not sure whats the difference between InputRequired() and DataRequired()
 	password = PasswordField(label="Password", validators=[validators.InputRequired()])
 
@@ -81,6 +84,8 @@ class ChatRoom(db.Model):
 	# I think table name defauts to 'chat_room'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String, unique=True, nullable=False)
+	description = db.Column(db.String(160), nullable=False)
+	owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	messages = db.relationship('Message', backref='room')
 
 class Message(db.Model):
@@ -98,23 +103,24 @@ def initialize_database():
 	db.create_all()
 	app.logger.info("Database initialized")
 
-	user = User(
-		username="heiskane",
-		is_admin=True,
-		description="The admin man guy",
-		email="asd@asd.asd",
-		password_hash=generate_password_hash("asd"))
-	db.session.add(user)
-	db.session.commit()
-	app.logger.info("First user added")
-
-	chat_room = ChatRoom(name="Welcome")
-	db.session.add(chat_room)
-	db.session.commit()
-
-	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
-	db.session.add(message)
-	db.session.commit()
+#	if not User.query.filter_by(username="heiskane").first():
+#		user = User(
+#			username="heiskane",
+#			is_admin=True,
+#			description="The admin man guy",
+#			email="asd@asd.asd",
+#			password_hash=generate_password_hash("asd"))
+#		db.session.add(user)
+#		db.session.commit()
+#		app.logger.info("First user added")
+#
+#	chat_room = ChatRoom(name="Welcome")
+#	db.session.add(chat_room)
+#	db.session.commit()
+#
+#	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
+#	db.session.add(message)
+#	db.session.commit()
 
 
 @login_manager.user_loader
@@ -128,6 +134,27 @@ def unauthorized():
 	# https://stackoverflow.com/questions/36269485/how-do-i-pass-through-the-next-url-with-flask-and-flask-login
 	destination = url_for(request.endpoint,**request.view_args)
 	return redirect(url_for('login', next=destination))
+
+# dev stuff
+@app.route('/test_data')
+def test_data():
+	user = User(
+		username="heiskane",
+		is_admin=True,
+		description="The admin man guy",
+		email="asd@asd.asd",
+		password_hash=generate_password_hash("asd"))
+	db.session.add(user)
+	db.session.commit()
+	app.logger.info("First user added")
+	chat_room = ChatRoom(name="Welcome", description="A room for newcomers!", owner=user)
+	db.session.add(chat_room)
+	db.session.commit()
+
+	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
+	db.session.add(message)
+	db.session.commit()
+	return "asd"
 
 @app.route('/')
 def home():
@@ -202,8 +229,8 @@ def get_messages(room_id):
 	message_list = []
 	for message in room.messages:
 		message_list.append({
-			'sender': f'{message.sender.username}',
-			'content': f'{message.content}'})
+			'sender': f'{escape(message.sender.username)}',
+			'content': f'{escape(message.content)}'})
 	return jsonify(message_list)
 
 @app.route('/chat_rooms')
@@ -217,7 +244,7 @@ def send_message(room_id):
 	user = current_user
 	message_form = MessageForm()
 	if not message_form.validate_on_submit():
-		flash("Something went wrong sending the message")
+		#flash("Something went wrong sending the message")
 		return redirect(request.referrer)
 	room = ChatRoom.query.get(message_form.room_id.data)
 	if not room:

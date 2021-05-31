@@ -2,8 +2,19 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<table>
+	<tr>
+		<th>Name</th>
+		<th>Description</th>
+		<th>Owner</th>
+	</tr>
 {% for room in rooms %}
-	<a href="{{ url_for('chat_room', room_name=room.name) }}">{{ room.name }}</a>
+	<tr>
+		<td><a href="{{ url_for('chat_room', room_name=room.name) }}">{{ room.name }}</a></td>
+		<td>{{ room.description }}</td>
+		<td>{{ room.owner.username }}</td>
+	</tr>
 {% endfor %}
+</table>
 
 {% endblock content %}

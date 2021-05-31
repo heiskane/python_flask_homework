@@ -8,7 +8,7 @@
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
-	<input type="submit">
+	<input tabindex="0" type="submit">
 </form>
 
 
