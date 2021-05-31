@@ -12,6 +12,7 @@ from flask_login import login_manager, login_user, login_required, LoginManager,
 from wtforms.fields.html5 import EmailField
 
 from os import urandom
+from datetime import datetime, timedelta
 
 # TODO: Fill the homepage
 # TODO: Private rooms that allow certain users?
@@ -25,7 +26,7 @@ from os import urandom
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
-app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///niko'
+app.config["SQLALCHEMY_DATABASE_URI"] = 'postgresql:///heiskanewsgi'
 db = SQLAlchemy(app)
 
 login_manager = LoginManager()
@@ -95,6 +96,7 @@ class Message(db.Model):
 	room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
 	sender_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	content = db.Column(db.String, nullable=False)
+	sent_time = db.Column(db.DateTime, nullable=False)
 
 class MessageForm(FlaskForm):
 	room_id = HiddenField(label="room_id", validators=[validators.DataRequired()])
@@ -153,7 +155,10 @@ def test_data():
 	db.session.add(chat_room)
 	db.session.commit()
 
-	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
+	message = Message(
+		content="Welcome to a chat room",
+		room=chat_room, sender=user,
+		sent_time = datetime(2021, 5, 25))
 	db.session.add(message)
 	db.session.commit()
 	return "asd"
@@ -255,9 +260,15 @@ def get_messages(room_id):
 	room = ChatRoom.query.get(room_id)
 	message_list = []
 	for message in room.messages:
+		if datetime.now() - message.sent_time < timedelta(days = 1):
+			# https://www.w3schools.com/python/python_datetime.asp
+			sent_time = message.sent_time.strftime("%H:%M")
+		else:
+			sent_time = message.sent_time.strftime("%d/%m")
 		message_list.append({
 			'sender': f'{escape(message.sender.username)}',
-			'content': f'{escape(message.content)}'})
+			'content': f'{escape(message.content)}',
+			'sent_time': f'{sent_time}'})
 	return jsonify(message_list)
 
 @app.route('/<int:room_id>/send_message', methods=['GET', 'POST'])
@@ -274,7 +285,8 @@ def send_message(room_id):
 	db.session.add(Message(
 		room_id = room.id,
 		sender_id = user.id,
-		content = message_form.content.data))
+		content = message_form.content.data,
+		sent_time = datetime.now()))
 	db.session.commit()
 	return redirect(request.referrer)
 	#return redirect(url_for('chat_room', room_id=room_id))

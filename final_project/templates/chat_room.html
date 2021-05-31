@@ -5,13 +5,16 @@
 <div class="chat" id="messages">
 </div>
 
+{% if not current_user.is_anonymous %}
 <form method="POST" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
 	<input tabindex="0" type="submit">
 </form>
-
+{% else %}
+<p>Please login <a href="{{ url_for('login') }}">here</a> to send messages!</p>
+{% endif %}
 
 <script>
 
@@ -23,8 +26,9 @@
 				for (let i = 0; i < messages.length; i++) {
 					let sender = messages[i].sender;
 					let content = messages[i].content;
-					messageList +=
-						"<p><b>" + sender + ": </b>" + content + "</p>"
+					let sent_time = messages[i].sent_time;
+					messageList += /* man i hate javascript */
+						"<p><b>" + sent_time + " " + "<a href='/user/" + sender + "'>" + sender + "</a>" + ": </b>" + content + "</p>"
 				}
 				document.getElementById("messages").innerHTML = messageList
 				var objDiv = document.getElementById("messages");
