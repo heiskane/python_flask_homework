@@ -88,6 +88,10 @@ class ChatRoom(db.Model):
 	owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
 	messages = db.relationship('Message', backref='room')
 
+class ChatRoomForm(FlaskForm):
+	name = StringField(label="Room Name", validators=[validators.DataRequired()])
+	description = StringField(label="Room Description", validators=[validators.DataRequired()])
+
 class Message(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	room_id = db.Column(db.Integer, db.ForeignKey('chat_room.id'), nullable=False)
@@ -227,6 +231,27 @@ def chat_room(room_name):
 		message_form=message_form,
 		room=room)
 
+@app.route('/add_room', methods=['GET', 'POST'])
+@login_required
+def add_room():
+	room_form = ChatRoomForm()
+	if not room_form.validate_on_submit():
+		return render_template('add_room.html', room_form=room_form)
+	app.logger.info(room_form.name.data)
+	app.logger.info(room_form.description.data)
+	app.logger.info(current_user.id)
+	db.session.add(ChatRoom(
+		name = room_form.name.data,
+		description = room_form.description.data,
+		owner = current_user))
+	db.session.commit()
+	return redirect(url_for('chat_rooms'))
+
+@app.route('/chat_rooms')
+def chat_rooms():
+	rooms = ChatRoom.query.all()
+	return render_template('chat_rooms.html', rooms=rooms)
+
 @app.route('/get_messages/<int:room_id>')
 def get_messages(room_id):
 	room = ChatRoom.query.get(room_id)
@@ -236,11 +261,6 @@ def get_messages(room_id):
 			'sender': f'{escape(message.sender.username)}',
 			'content': f'{escape(message.content)}'})
 	return jsonify(message_list)
-
-@app.route('/chat_rooms')
-def chat_rooms():
-	rooms = ChatRoom.query.all()
-	return render_template('chat_rooms.html', rooms=rooms)
 
 @app.route('/<int:room_id>/send_message', methods=['GET', 'POST'])
 @login_required

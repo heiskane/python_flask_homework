@@ -1,0 +1,12 @@
+{% set title = "Add New Room" %}
+{% extends "layout.html" %}
+{% block content %}
+
+<form method="POST">
+	{% for field in room_form %}
+		{{ field.label if not field.flags.hidden }} {{ field }}<br>
+	{% endfor %}
+	<input type="submit">
+</form>
+
+{% endblock content %}
