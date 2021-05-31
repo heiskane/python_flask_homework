@@ -31,9 +31,12 @@
 						"<p><b>" + sent_time + " " + "<a href='/user/" + sender + "'>" + sender + "</a>" + ": </b>" + content + "</p>"
 				}
 				document.getElementById("messages").innerHTML = messageList
+
+
 				var objDiv = document.getElementById("messages");
 				objDiv.scrollTop = objDiv.scrollHeight;
-			});
+			})
+			.catch((error) => {});
 	}
 
 	{# https://developer.mozilla.org/en-US/docs/Web/API/Window/load_event #}
