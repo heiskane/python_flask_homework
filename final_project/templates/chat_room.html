@@ -6,7 +6,7 @@
 </div>
 
 {% if not current_user.is_anonymous %}
-<form method="POST" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
+<form method="POST" autocomplete="off" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
