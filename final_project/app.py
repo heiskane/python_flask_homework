@@ -221,7 +221,11 @@ def chat_room(room_name):
 	message_form = MessageForm()
 	message_form.room_id.data = room.id
 	# maybe setup an anonymous user to use current_user.is_anonymous
-	return render_template('chat_room.html', messages=messages, message_form=message_form)
+	return render_template(
+		'chat_room.html',
+		messages=messages,
+		message_form=message_form,
+		room=room)
 
 @app.route('/get_messages/<int:room_id>')
 def get_messages(room_id):

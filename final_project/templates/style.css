@@ -8,6 +8,12 @@
 
 .content h1 {
 	text-align: center;
+	padding: 20px;
+	font-size: 60px;
+}
+
+nav {
+	font-size: 30px;
 }
 
 /* Yoink
