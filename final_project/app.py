@@ -259,6 +259,8 @@ def chat_rooms():
 def get_messages(room_id):
 	room = ChatRoom.query.get(room_id)
 	message_list = []
+	if not room.messages:
+		return ''
 	for message in room.messages:
 		if datetime.now() - message.sent_time < timedelta(days = 1):
 			# https://www.w3schools.com/python/python_datetime.asp

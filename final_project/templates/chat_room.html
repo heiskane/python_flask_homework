@@ -6,17 +6,42 @@
 </div>
 
 {% if not current_user.is_anonymous %}
-<form method="POST" autocomplete="off" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
+{#
+<form method="POST" autocomplete="off" action="{{ url_for('send_message', room_id=room.id) }}">
+#}
+<form id="form">
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
-	<input tabindex="0" type="submit">
+	<input id="submit" tabindex="0" type="submit">
 </form>
 {% else %}
 <p>Please login <a href="{{ url_for('login') }}">here</a> to send messages!</p>
 {% endif %}
 
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 <script>
+
+	// this is the id of the submit button
+	{# https://stackoverflow.com/questions/18169933/submit-form-without-reloading-page #}
+	$("#submit").click(function() {
+
+		var url = "/{{ room.id }}/send_message"; // the script where you handle the form input.
+
+		$.ajax({
+			   type: "POST",
+			   url: url,
+			   data: $("#form").serialize(), // serializes the form's elements.
+			   success: function(data)
+			   {
+			   		{# https://stackoverflow.com/questions/20416803/how-do-i-clear-the-previous-text-field-value-after-submitting-the-form-with-out #}
+					document.getElementById("content").value = ''; // clear message field
+					getMessages();
+			   }
+			 });
+
+		return false; // avoid to execute the actual submit of the form.
+	});
 
 	function getMessages() {
 		fetch('/get_messages/{{ message_form.room_id.data }}')
