@@ -9,11 +9,22 @@
 .content h1 {
 	text-align: center;
 	padding: 20px;
-	font-size: 60px;
+	font-size: 30px;
 }
 
+
+.chat {
+	margin: auto;
+	max-height: 50vh;
+	width: 75%;
+	word-wrap: break-word;
+	overflow: auto;
+	padding: 2%;
+}
+
+
 nav {
-	font-size: 30px;
+	font-size: 13px;
 }
 
 /* Yoink
@@ -74,4 +85,17 @@ table th {
   text-align: left;
   background-color: #333;
   color: white;
+}
+
+@media (min-width: 576px) {
+	
+	nav {
+		font-size: 30px;
+	}
+
+	.content h1 {
+		text-align: center;
+		padding: 20px;
+		font-size: 60px;
+	}
 }

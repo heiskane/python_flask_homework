@@ -2,7 +2,8 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div id="messages"></div>
+<div class="chat" id="messages">
+</div>
 
 <form method="POST" action="{{ url_for('send_message', room_id=message_form.room_id.data) }}">
 	{% for field in message_form %}
@@ -26,6 +27,8 @@
 						"<p><b>" + sender + ": </b>" + content + "</p>"
 				}
 				document.getElementById("messages").innerHTML = messageList
+				var objDiv = document.getElementById("messages");
+				objDiv.scrollTop = objDiv.scrollHeight;
 			});
 	}
 
@@ -33,6 +36,7 @@
 	window.addEventListener('load', (event) => {
 		getMessages();
 	});
+
 
 	{# https://www.codegrepper.com/code-examples/javascript/javascript+request+every+second #}
 	setInterval(getMessages, 5000 /* milliseconds */ );
