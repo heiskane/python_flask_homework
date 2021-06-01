@@ -37,6 +37,6 @@ def send_mail(recipient, subject, content, sender="bot@mypythonproject.rocks"):
 
 if __name__ == '__main__':
 	send_mail(
-		recipient="henipe@gmail.com",
+		recipient="example@gmail.com",
 		subject="Potato",
 		content="Hello World!")

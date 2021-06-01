@@ -6,10 +6,7 @@
 </div>
 
 {% if not current_user.is_anonymous %}
-{#
-<form method="POST" autocomplete="off" action="{{ url_for('send_message', room_id=room.id) }}">
-#}
-<form id="form">
+<form autocomplete="off" id="form">
 	{% for field in message_form %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
@@ -22,7 +19,6 @@
 <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 <script>
 
-	// this is the id of the submit button
 	{# https://stackoverflow.com/questions/18169933/submit-form-without-reloading-page #}
 	$("#submit").click(function() {
 

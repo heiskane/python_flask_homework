@@ -1,9 +1,12 @@
+body {
+	margin: 0;
+}
+
 .content {
 	margin: auto;
-	padding: 15px;
-	margin-top: 30px;
+	padding: 5px;
 	background-color: #b3b3b3;
-	max-width: 80%;
+	max-width: 100%;
 }
 
 .content h1 {
@@ -15,8 +18,8 @@
 
 .chat {
 	margin: auto;
-	max-height: 50vh;
-	width: 75%;
+	max-height: 60vh;
+	width: 90%;
 	word-wrap: break-word;
 	overflow: auto;
 	padding: 2%;
@@ -115,4 +118,22 @@ table th {
 		padding: 20px;
 		font-size: 60px;
 	}
+
+	.chat {
+		margin: auto;
+		max-height: 50vh;
+		width: 75%;
+		word-wrap: break-word;
+		overflow: auto;
+		padding: 2%;
+	}
+
+	.content {
+		margin: auto;
+		padding: 15px;
+		margin-top: 30px;
+		background-color: #b3b3b3;
+		max-width: 80%;
+	}
+
 }
