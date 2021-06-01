@@ -194,6 +194,7 @@ def register_user():
 	user = User(
 		username=username,
 		email=user_form.email.data,
+		# Temporary code. New one is set in get_verify_code
 		verify_code=urandom(16).hex())
 	user.set_password(user_form.password.data)
 	db.session.add(user)
@@ -233,6 +234,8 @@ def get_verify_code():
 	if not current_user.email:
 		flash("Please add an email address to your profile first")
 		return redirect(url_for('profile_page', username=current_user.username))
+	current_user.verify_code = urandom(16).hex()
+	db.session.commit()
 	content = f"""
 	Thank you for verifying your email!
 	Here is your code: {current_user.verify_code}
