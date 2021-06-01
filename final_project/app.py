@@ -37,8 +37,8 @@ class User(db.Model):
 	email = db.Column(db.String, unique=True, nullable=True) # set to unique after testing
 	is_verified = db.Column(db.Boolean, default=False)
 	verify_code = db.Column(db.String, nullable=False)
-	messages = db.relationship('Message', backref='sender', lazy=True)
-	rooms = db.relationship('ChatRoom', backref='owner', lazy=True)
+	messages = db.relationship('Message', backref=db.backref('sender', lazy=True))
+	rooms = db.relationship('ChatRoom', backref=db.backref('owner', lazy=True))
 	password_hash = db.Column(db.String, nullable=False)
 	# Not sure if i need to set nullable if i have a default value 
 	authenticated = db.Column(db.Boolean, default=False)
@@ -84,7 +84,7 @@ class ChatRoom(db.Model):
 	name = db.Column(db.String, unique=True, nullable=False)
 	description = db.Column(db.String(160), nullable=False)
 	owner_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-	messages = db.relationship('Message', backref='room', lazy=True)
+	messages = db.relationship('Message', backref=db.backref('room', lazy=True))
 
 class ChatRoomForm(FlaskForm):
 	name = StringField(label="Room Name", validators=[validators.length(3, 32), validators.DataRequired()])
