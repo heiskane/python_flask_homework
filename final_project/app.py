@@ -106,24 +106,29 @@ def initialize_database():
 	db.create_all()
 	app.logger.info("Database initialized")
 
-#	if not User.query.filter_by(username="heiskane").first():
-#		user = User(
-#			username="heiskane",
-#			is_admin=True,
-#			description="The admin man guy",
-#			email="asd@asd.asd",
-#			password_hash=generate_password_hash("asd"))
-#		db.session.add(user)
-#		db.session.commit()
-#		app.logger.info("First user added")
-#
-#	chat_room = ChatRoom(name="Welcome")
-#	db.session.add(chat_room)
-#	db.session.commit()
-#
-#	message = Message(content="Welcome to a chat room", room=chat_room, sender=user)
-#	db.session.add(message)
-#	db.session.commit()
+	if not User.query.filter_by(username="heiskane").first():
+		user = User(
+			username="heiskane",
+			is_admin=True,
+			description="The admin man guy",
+			email="asd@asd.asd",
+			verify_code = urandom(16).hex(),
+			password_hash=generate_password_hash("asd"))
+		db.session.add(user)
+		db.session.commit()
+		app.logger.info("First user added")
+
+	if not ChatRoom.query.filter_by(name="Welcome").first():
+		chat_room = ChatRoom(name="Welcome", description="A room for newcomers!", owner=user)
+		db.session.add(chat_room)
+		db.session.commit()
+
+		message = Message(
+			content="Welcome to a chat room",
+			room=chat_room, sender=user,
+			sent_time = datetime(2021, 5, 25))
+		db.session.add(message)
+		db.session.commit()
 
 @login_manager.user_loader
 def user_loader(username):
@@ -140,31 +145,6 @@ def unauthorized():
 @app.errorhandler(404)
 def page_not_found(e):
 	return render_template('404.html'), 404
-
-# dev stuff
-@app.route('/test_data')
-def test_data():
-	user = User(
-		username="heiskane",
-		is_admin=True,
-		description="The admin man guy",
-		email="asd@asd.asd",
-		verify_code = urandom(16).hex(),
-		password_hash=generate_password_hash("asd"))
-	db.session.add(user)
-	db.session.commit()
-	app.logger.info("First user added")
-	chat_room = ChatRoom(name="Welcome", description="A room for newcomers!", owner=user)
-	db.session.add(chat_room)
-	db.session.commit()
-
-	message = Message(
-		content="Welcome to a chat room",
-		room=chat_room, sender=user,
-		sent_time = datetime(2021, 5, 25))
-	db.session.add(message)
-	db.session.commit()
-	return "asd"
 
 @app.route('/')
 def home():
