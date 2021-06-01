@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<a href="{{ url_for('add_room') }}">Add a new room!</a>
+<a class="link-dark" href="{{ url_for('add_room') }}">Add a new room!</a>
 
 <table>
 	<tr>
@@ -12,7 +12,7 @@
 	</tr>
 {% for room in rooms %}
 	<tr>
-		<td><a href="{{ url_for('chat_room', room_name=room.name) }}">{{ room.name }}</a></td>
+		<td><a class="link-dark" href="{{ url_for('chat_room', room_name=room.name) }}">{{ room.name }}</a></td>
 		<td>{{ room.description }}</td>
 		<td>{{ room.owner.username }}</td>
 	</tr>
