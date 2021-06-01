@@ -164,7 +164,7 @@ def login():
 	destination = request.args.get('next')
 	if destination:
 		return redirect(destination)
-	return redirect(url_for('home'))
+	return redirect(url_for('chat_rooms'))
 
 # https://flask-login.readthedocs.io/en/latest/
 @app.route('/logout')
