@@ -33,7 +33,8 @@ def send_mail(recipient, subject, content, sender="verify@mypythonproject.rocks"
 			{
 				"type": "text/plain",
 				"value": f"{content}"}]}
-	post(URL, json=json, headers=headers)
+	response = post(URL, json=json, headers=headers)
+	print(response.text)
 
 if __name__ == '__main__':
 	send_mail(

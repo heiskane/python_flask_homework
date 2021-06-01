@@ -10,7 +10,7 @@
 	<p>Email: {{ user.email }}</p>
 	<p>Email Verified: {{ user.is_verified }}</p>
 	{% if not current_user.is_verified %}
-	<p>Verify Email</p>
+	<a href="{{ url_for('get_verify_code') }}">Get Email Verification Code</a>
 	<form action="/verify">
 		<input type="text" name="code" placeholder="Verification code">
 		<input type="submit" value="Verify">

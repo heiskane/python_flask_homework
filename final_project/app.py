@@ -240,6 +240,9 @@ def get_verify_code():
 	if current_user.is_verified:
 		flash("User already verified!")
 		return redirect(url_for('profile_page', username=current_user.username))
+	if not current_user.email:
+		flash("Please add an email address to your profile first")
+		return redirect(url_for('profile_page', username=current_user.username))
 	content = f"""
 	Thank you for verifying your email!
 	Here is your code: {current_user.verify_code}
@@ -248,7 +251,9 @@ def get_verify_code():
 	send_mail(
 		recipient=current_user.email,
 		subject="Verify Code",
-		content=content) 
+		content=content)
+	app.logger.info("Verify code sent")
+	flash("Verify code sent to your email!")
 	return redirect(url_for('profile_page', username=current_user.username))
 
 @app.route('/chat_room/<string:room_name>')
