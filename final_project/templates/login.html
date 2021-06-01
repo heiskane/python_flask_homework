@@ -2,24 +2,6 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<!--
-<form method="POST">
-	{% for field in user_form %}
-		{% for err in field.errors %}
-			<p>{{ err }}</p>
-		{% endfor %}
-		{#{{ field.label if not field.flags.hidden }} {{ field }}<br>#}
-	{% endfor %}
-
-	{# More control without a for loop here #}
-	{{ user_form.username.label }} {{ user_form.username }}<br>
-	{{ user_form.password.label }} {{ user_form.password }}<br>
-	{{ user_form.csrf_token }}
-	<a class="link-dark" href="{{ url_for('forgot_password') }}">Forgot password?</a><br>
-	<input type="submit">
-</form>
--->
-
 <main class="form-signin">
   <form autocomplete="off" method="POST">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
