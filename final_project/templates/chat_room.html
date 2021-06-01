@@ -9,7 +9,7 @@
 	{{ message_form.room_id }}
 	<input id="content" name="content" required="" type="text" onFocus="scrollDown()">
 	{{ message_form.csrf_token }}
-	<input id="submit" tabindex="0" type="submit">
+	<input id="submit" tabindex="0" type="submit" value="Send Message">
 </form>
 {% else %}
 <p>Please login <a class="link-dark" href="{{ url_for('login') }}">here</a> to send messages!</p>
