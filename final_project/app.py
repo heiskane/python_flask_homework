@@ -213,6 +213,18 @@ def profile_page(username):
 		abort(404)
 	return render_template('user_profile.html', user=user)
 
+@app.route('/user/set_email', methods=['POST'])
+@login_required
+def set_email():
+	email = request.form.get('email')
+	if User.query.filter_by(email=email).first():
+		flash("No")
+		return redirect(url_for('profile_page', username=current_user.username))
+	current_user.email = email
+	app.logger.info(email)
+	db.session.commit()
+	return redirect(url_for('profile_page', username=current_user.username))
+
 @app.route('/verify')
 @login_required
 def verify():

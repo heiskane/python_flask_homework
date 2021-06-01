@@ -6,6 +6,13 @@
 
 <p>Description: {{ user.description }}</p>
 <p>Admin: {{ user.is_admin }}</p>
+{% if current_user == user and not user.email %}
+<p>Set your email address</p>
+<form action="/user/set_email" method="POST">
+	<input type="email" name="email" placeholder="potato@example.com">
+	<input type="submit" value="Add email">
+</form>
+{% endif %}
 {% if current_user == user and user.email%}
 	<p>Email: {{ user.email }}</p>
 	<p>Email Verified: {{ user.is_verified }}</p>
