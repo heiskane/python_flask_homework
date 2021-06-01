@@ -24,6 +24,10 @@
 	  <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
 	  <label for="floatingPassword">Password</label>
 	</div>
+	<div class="text-dark form-floating">
+	  <input type="password" class="form-control" id="floatingConfirmPassword" placeholder="Confirm Password" name="confirm_password">
+	  <label for="floatingPassword">Confirm Password</label>
+	</div>
 
 	{{ user_form.csrf_token }}
 	<button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>

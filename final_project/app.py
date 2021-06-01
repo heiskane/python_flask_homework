@@ -187,12 +187,19 @@ def register_user():
 		# but not sure what i should do diffrently
 		flash('Account already exists')
 		return redirect(url_for('register_user'))
-	
+
+	if not user_form.password.data == request.form.get('confirm_password'):
+		flash("Passwords did not match")
+		return redirect(url_for('register_user'))
+
 	user = User(
 		username=username,
-		email=user_form.email.data,
 		# Temporary code. New one is set in get_verify_code
 		verify_code=urandom(16).hex())
+	
+	if user_form.email.data:
+		user.email = user_form.email.data
+
 	user.set_password(user_form.password.data)
 	db.session.add(user)
 	db.session.commit()
