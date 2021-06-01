@@ -7,6 +7,8 @@
 
 body {
 	background-image: url('/static/img/forest.png');
+	/*background-repeat: no-repeat;*/
+	background-size: cover;
 	font-family: cascadia !important;
 }
 
@@ -33,16 +35,6 @@ body {
 	word-wrap: break-word;
 }
 
-.form {
-	margin: auto;
-	max-width: 30vw;
-	padding: 50px;
-}
-
-.form-floating {
-	margin: 10px;
-}
-
 /*
 Yoink
 https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp
@@ -50,13 +42,13 @@ https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp
 
 /* Hide scrollbar for Chrome, Safari and Opera */
 .chat-box::-webkit-scrollbar {
-  display: none;
+	display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .chat-box {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+	-ms-overflow-style: none;  /* IE and Edge */
+	scrollbar-width: none;  /* Firefox */
 }
 
 /* Yoink
@@ -72,7 +64,7 @@ ul {
 }
 
 li {
-  float: left;
+	float: left;
 }
 
 li a {
@@ -97,14 +89,14 @@ Yoink
 https://www.w3schools.com/css/css_table.asp
 
 table {
-  font-family: Arial, Helvetica, sans-serif;
-  border-collapse: collapse;
-  width: 100%;
+	font-family: Arial, Helvetica, sans-serif;
+	border-collapse: collapse;
+	width: 100%;
 }
 
 table td, table th {
-  border: 1px solid #ddd;
-  padding: 8px;
+	border: 1px solid #ddd;
+	padding: 8px;
 }
 
 table tr:nth-child(even){background-color: #f2f2f2;}
@@ -112,11 +104,11 @@ table tr:nth-child(even){background-color: #f2f2f2;}
 table tr:hover {background-color: #ddd;}
 
 table th {
-  padding-top: 12px;
-  padding-bottom: 12px;
-  text-align: left;
-  background-color: #333;
-  color: white;
+	padding-top: 12px;
+	padding-bottom: 12px;
+	text-align: left;
+	background-color: #333;
+	color: white;
 }
 
 /* end */
@@ -152,6 +144,16 @@ table th {
 
 	.main-navbar {
 		margin-bottom: 60px;
+	}
+
+	.form {
+		margin: auto;
+		max-width: 30vw;
+		padding: 50px;
+	}
+
+	.form-floating {
+		margin: 10px;
 	}
 
 }
