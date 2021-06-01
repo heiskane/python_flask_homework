@@ -6,9 +6,9 @@
 
 {% if not current_user.is_anonymous %}
 <form autocomplete="off" id="form">
-	{% for field in message_form %}
-		{{ field.label if not field.flags.hidden }} {{ field }}<br>
-	{% endfor %}
+	{{ message_form.room_id }}
+	<input id="content" name="content" required="" type="text" onFocus="scrollDown()">
+	{{ message_form.csrf_token }}
 	<input id="submit" tabindex="0" type="submit">
 </form>
 {% else %}
@@ -38,6 +38,11 @@
 		return false; // avoid to execute the actual submit of the form.
 	});
 
+	function scrollDown() {
+		var objDiv = document.getElementById("messages");
+		objDiv.scrollTop = objDiv.scrollHeight;
+	}
+
 	function getMessages() {
 		fetch('/get_messages/{{ message_form.room_id.data }}')
 			.then(response => response.json())
@@ -51,10 +56,7 @@
 						"<p><b>" + sent_time + " " + "<a class='link-dark' href='/user/" + sender + "'>" + sender + "</a>" + ": </b>" + content + "</p>"
 				}
 				document.getElementById("messages").innerHTML = messageList
-
-
-				var objDiv = document.getElementById("messages");
-				objDiv.scrollTop = objDiv.scrollHeight;
+				scrollDown();
 			})
 			.catch((error) => {});
 	}
