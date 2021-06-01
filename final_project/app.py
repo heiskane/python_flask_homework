@@ -147,10 +147,6 @@ def unauthorized():
 def page_not_found(e):
 	return render_template('404.html'), 404
 
-@app.route('/')
-def home():
-	return render_template('home.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	user_form = UserForm()
@@ -202,7 +198,7 @@ def register_user():
 	db.session.commit()
 	app.logger.info("New user registered with the name: " + username)
 	login_user(user)
-	return redirect(url_for('home'))
+	return redirect(url_for('chat_rooms'))
 
 # string here does not accept slashes so maybe use 'path' instead
 # I guess use string for now but i will have to add illegal chars to usernames
@@ -294,6 +290,7 @@ def add_room():
 	db.session.commit()
 	return redirect(url_for('chat_rooms'))
 
+@app.route('/')
 @app.route('/chat_rooms')
 def chat_rooms():
 	rooms = ChatRoom.query.all()
