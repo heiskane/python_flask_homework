@@ -20,6 +20,7 @@ from mailer import send_mail
 # TODO: Work on profile page
 # TODO: Private rooms that allow certain users?
 # TODO: user bans?
+# TODO: look into database migrations
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
@@ -218,7 +219,7 @@ def profile_page(username):
 def set_email():
 	email = request.form.get('email')
 	if User.query.filter_by(email=email).first():
-		flash("No")
+		flash("Email already registered")
 		return redirect(url_for('profile_page', username=current_user.username))
 	current_user.email = email
 	app.logger.info(email)
