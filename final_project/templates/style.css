@@ -33,6 +33,16 @@ body {
 	word-wrap: break-word;
 }
 
+.form {
+	margin: auto;
+	max-width: 30vw;
+	padding: 50px;
+}
+
+.form-floating {
+	margin: 10px;
+}
+
 /*
 Yoink
 https://www.w3schools.com/howto/howto_css_hide_scrollbars.asp
