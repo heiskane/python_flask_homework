@@ -15,6 +15,7 @@ from os import urandom
 from datetime import datetime, timedelta
 
 # TODO: Fill the homepage
+# TODO: Work on profile page
 # TODO: Private rooms that allow certain users?
 # TODO: fix method not allowed in send_message after redirect from login
 # TODO: user bans?
@@ -261,7 +262,8 @@ def get_messages(room_id):
 	message_list = []
 	if not room.messages:
 		return ''
-	for message in room.messages:
+	messages = room.messages[-500:]
+	for message in messages:
 		if datetime.now() - message.sent_time < timedelta(days = 1):
 			# https://www.w3schools.com/python/python_datetime.asp
 			sent_time = message.sent_time.strftime("%H:%M")
