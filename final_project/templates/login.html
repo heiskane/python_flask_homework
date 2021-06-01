@@ -21,11 +21,11 @@
 -->
 
 <main class="form-signin">
-  <form method="POST">
+  <form autocomplete="off" method="POST">
     <h1 class="h3 mb-3 fw-normal">Please sign in</h1>
 
     <div class="form-floating">
-      <input type="text" class="form-control" id="floatingInput" placeholder="" name="username">
+      <input type="text" class="form-control" id="floatingInputUsername" placeholder="" name="username">
       <label for="floatingInput">Username</label>
     </div>
     <div class="form-floating">
@@ -35,7 +35,7 @@
 
     <div class="checkbox mb-3">
       <label>
-        <input type="checkbox" value="remember-me"> Remember me
+        <input id="remember-me" type="checkbox" value="remember-me"> Remember me
       </label>
     </div>
     {{ user_form.csrf_token }}
@@ -43,6 +43,28 @@
   </form>
 </main>
 
+{# https://codepen.io/AllThingsSmitty/pen/pOoeyz #}
+<script>
+	const rmCheck = document.getElementById("remember-me"),
+	    emailInput = document.getElementById("floatingInputUsername");
 
+	if (localStorage.checkbox && localStorage.checkbox !== "") {
+	  rmCheck.setAttribute("checked", "checked");
+	  emailInput.value = localStorage.username;
+	} else {
+	  rmCheck.removeAttribute("checked");
+	  emailInput.value = "";
+	}
+
+	function lsRememberMe() {
+	  if (rmCheck.checked && emailInput.value !== "") {
+	    localStorage.username = emailInput.value;
+	    localStorage.checkbox = rmCheck.value;
+	  } else {
+	    localStorage.username = "";
+	    localStorage.checkbox = "";
+	  }
+	}
+</script>
 
 {% endblock content %}

@@ -2,14 +2,38 @@
 {% extends "layout.html" %}
 {% block content %}
 
+<!--
 <form method="POST">
+	<input type="submit">
+</form>
+-->
+
+<main class="form-signin">
+  <form autocomplete="off" method="POST">
+	<h1 class="h3 mb-3 fw-normal">Please sign in</h1>
+
 	{% for field in user_form %}
 		{% for err in field.errors %}
 			<p>{{ err }}</p>
 		{% endfor %}
-		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
-	<input type="submit">
-</form>
+
+	<div class="form-floating">
+	  <input type="text" class="form-control" id="floatingInputUser" placeholder="" name="username">
+	  <label for="floatingInput">Username</label>
+	</div>
+	<div class="form-floating">
+	  <input type="email" class="form-control" id="floatingInputEmail" placeholder="potato@example.com" name="email">
+	  <label for="floatingInput">Email (Optional)</label>
+	</div>
+	<div class="form-floating">
+	  <input type="password" class="form-control" id="floatingPassword" placeholder="Password" name="password">
+	  <label for="floatingPassword">Password</label>
+	</div>
+
+	{{ user_form.csrf_token }}
+	<button class="w-100 btn btn-lg btn-primary" type="submit">Sign in</button>
+  </form>
+</main>
 
 {% endblock content %}
