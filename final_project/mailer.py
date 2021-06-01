@@ -9,16 +9,16 @@ load_dotenv()
 API_KEY = getenv('API_KEY')
 headers = {'Authorization': f'Bearer {API_KEY}'}
 
-def send_mail(recipient, subject, content, sender="bot@mypythonproject.rocks"):
+def send_mail(recipient, subject, content, sender="verify@mypythonproject.rocks"):
 	"""
 	from mailer import send_mail   
 	send_mail(
-		recipient="henipe@gmail.com",
+		recipient="recipient@gmail.com",
 		subject="subject",
 		content="Hello Potato") 
 	"""
-	#URL = 'https://api.sendgrid.com/v3/mail/send'
-	URL = 'http://127.0.0.1'
+	URL = 'https://api.sendgrid.com/v3/mail/send'
+	#URL = 'http://127.0.0.1'
 	json = {
 		"personalizations": [
 			{ "to": [

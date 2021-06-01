@@ -6,5 +6,16 @@
 
 <p>Description: {{ user.description }}</p>
 <p>Admin: {{ user.is_admin }}</p>
+{% if current_user == user and user.email%}
+	<p>Email: {{ user.email }}</p>
+	<p>Email Verified: {{ user.is_verified }}</p>
+	{% if not current_user.is_verified %}
+	<p>Verify Email</p>
+	<form action="/verify">
+		<input type="text" name="code" placeholder="Verification code">
+		<input type="submit" value="Verify">
+	</form>
+	{% endif %}
+{% endif %}
 
 {% endblock content %}

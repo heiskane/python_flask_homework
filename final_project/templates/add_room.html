@@ -4,6 +4,9 @@
 
 <form method="POST">
 	{% for field in room_form %}
+		{% for err in field.errors %}
+			<p>{{ err }}</p>
+		{% endfor %}
 		{{ field.label if not field.flags.hidden }} {{ field }}<br>
 	{% endfor %}
 	<input type="submit">

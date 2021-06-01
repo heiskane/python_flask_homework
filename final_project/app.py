@@ -14,16 +14,12 @@ from wtforms.fields.html5 import EmailField
 from os import urandom
 from datetime import datetime, timedelta
 
+from mailer import send_mail
+
 # TODO: Fill the homepage
 # TODO: Work on profile page
 # TODO: Private rooms that allow certain users?
-# TODO: fix method not allowed in send_message after redirect from login
 # TODO: user bans?
-# TODO: look into having 2 users in 2 diffrent tabs acting weird
-#		This happens when you have user 1 send a message in tab one
-#		and user 2 send a message in tab 2
-#		suddenly both tabs have the same user??
-#		Maybe its fine tho
 
 app = Flask(__name__)
 app.secret_key = urandom(32)
@@ -38,7 +34,9 @@ class User(db.Model):
 	username = db.Column(db.String, nullable=False, unique=True)
 	description = db.Column(db.String(160), nullable=True)
 	# Dont know if i want email to be required
-	email = db.Column(db.String, nullable=True) # set to unique after testing
+	email = db.Column(db.String, unique=True, nullable=True) # set to unique after testing
+	is_verified = db.Column(db.Boolean, default=False)
+	verify_code = db.Column(db.String, nullable=False)
 	messages = db.relationship('Message', backref='sender')
 	rooms = db.relationship('ChatRoom', backref='owner')
 	password_hash = db.Column(db.String, nullable=False)
@@ -73,7 +71,7 @@ class UserForm(FlaskForm):
 		'placeholder': 'Username'
 		}, validators=[validators.length(4, 18)])
 	email = EmailField(label="Email", render_kw={
-		'placeholder': 'potato@example.com (Optional)'
+		'placeholder': 'Optional'
 		}, validators=[validators.Email(), validators.Optional()])
 	# Not sure whats the difference between InputRequired() and DataRequired()
 	password = PasswordField(label="Password", validators=[validators.InputRequired()])
@@ -89,8 +87,8 @@ class ChatRoom(db.Model):
 	messages = db.relationship('Message', backref='room')
 
 class ChatRoomForm(FlaskForm):
-	name = StringField(label="Room Name", validators=[validators.DataRequired()])
-	description = StringField(label="Room Description", validators=[validators.DataRequired()])
+	name = StringField(label="Room Name", validators=[validators.length(3, 32), validators.DataRequired()])
+	description = StringField(label="Room Description", validators=[validators.length(3, 159), validators.DataRequired()])
 
 class Message(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -127,7 +125,6 @@ def initialize_database():
 #	db.session.add(message)
 #	db.session.commit()
 
-
 @login_manager.user_loader
 def user_loader(username):
 	return User.query.filter_by(username=username).first()
@@ -140,6 +137,10 @@ def unauthorized():
 	destination = url_for(request.endpoint,**request.view_args)
 	return redirect(url_for('login', next=destination))
 
+@app.errorhandler(404)
+def page_not_found(e):
+	return render_template('404.html'), 404
+
 # dev stuff
 @app.route('/test_data')
 def test_data():
@@ -148,6 +149,7 @@ def test_data():
 		is_admin=True,
 		description="The admin man guy",
 		email="asd@asd.asd",
+		verify_code = urandom(16).hex(),
 		password_hash=generate_password_hash("asd"))
 	db.session.add(user)
 	db.session.commit()
@@ -201,7 +203,8 @@ def register_user():
 		return redirect(url_for('register_user'))
 	user = User(
 		username=username,
-		email=user_form.email.data)
+		email=user_form.email.data,
+		verify_code=urandom(16).hex())
 	user.set_password(user_form.password.data)
 	db.session.add(user)
 	db.session.commit()
@@ -218,6 +221,35 @@ def profile_page(username):
 	if not user:
 		abort(404)
 	return render_template('user_profile.html', user=user)
+
+@app.route('/verify')
+@login_required
+def verify():
+	code = request.args.get('code')
+	if not current_user.verify_code == code:
+		flash("Something went wrong!")
+		return redirect(url_for('profile_page', username=current_user.username))
+	current_user.is_verified = True
+	db.session.commit()
+	flash("Email successfully verified!")
+	return redirect(url_for('profile_page', username=current_user.username))
+
+@app.route('/get_verify_code')
+@login_required
+def get_verify_code():
+	if current_user.is_verified:
+		flash("User already verified!")
+		return redirect(url_for('profile_page', username=current_user.username))
+	content = f"""
+	Thank you for verifying your email!
+	Here is your code: {current_user.verify_code}
+	You can also just use this link here: http://mypythonproject.rocks/verify?code={current_user.verify_code}
+	"""
+	send_mail(
+		recipient=current_user.email,
+		subject="Verify Code",
+		content=content) 
+	return redirect(url_for('profile_page', username=current_user.username))
 
 @app.route('/chat_room/<string:room_name>')
 def chat_room(room_name):
