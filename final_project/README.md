@@ -5,5 +5,6 @@ This is my final project for the python flask course by [Tero Karvinen](https://
 The main idea is to have a chat room application where authenticated users can create new rooms and send messages in those rooms.
 
 ![chat](chat.png)
-![chat_rooms](chat_rooms.png)
 ![register](register.png)
+![chat_rooms](chat_rooms.png)
+![login](login.png)
