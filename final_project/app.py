@@ -195,12 +195,22 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register_user():
 	user_form = UserForm()
+	
 	if not user_form.validate_on_submit():
 		return render_template('register.html', user_form=user_form)
 	username = user_form.username.data
+	
 	if User.query.filter_by(username=username).first():
 		flash("Username taken")
 		return redirect(url_for('register_user'))
+	email = user_form.email.data
+
+	if email and User.query.filter_by(email=email).first():
+		# I really dont like telling the user that the email i registered
+		# but not sure what i should do diffrently
+		flash('Account already exists')
+		return redirect(url_for('register_user'))
+	
 	user = User(
 		username=username,
 		email=user_form.email.data,
