@@ -2,7 +2,7 @@
 {% extends "layout.html" %}
 {% block content %}
 
-<div class="overflow-auto chat-box" id="messages"></div>
+<div class="text-light overflow-auto chat-box" id="messages"></div>
 
 {% if not current_user.is_anonymous %}
 <form autocomplete="off" id="form">
@@ -12,7 +12,7 @@
 	<input id="submit" tabindex="0" type="submit" value="Send Message">
 </form>
 {% else %}
-<p>Please login <a class="link-dark" href="{{ url_for('login') }}">here</a> to send messages!</p>
+<p class="text-light">Please login <a class="link-light" href="{{ url_for('login') }}">here</a> to send messages!</p>
 {% endif %}
 
 <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
@@ -53,7 +53,7 @@
 					let content = messages[i].content;
 					let sent_time = messages[i].sent_time;
 					messageList += /* man i hate javascript */
-						"<p><b>" + sent_time + " " + "<a class='link-dark' href='/user/" + sender + "'>" + sender + "</a>" + ": </b>" + content + "</p>"
+						"<p><b>" + sent_time + " " + "<a class='link-light' href='/user/" + sender + "'>" + sender + "</a>" + ": </b>" + content + "</p>"
 				}
 				document.getElementById("messages").innerHTML = messageList
 				scrollDown();

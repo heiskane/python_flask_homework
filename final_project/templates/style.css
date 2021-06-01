@@ -6,7 +6,12 @@
 }
 
 body {
+	background-image: url('/static/img/forest.png');
 	font-family: cascadia !important;
+}
+
+.container-lg {
+	background-color: rgba(30, 30, 30, 0.9) !important;
 }
 
 .content {

@@ -31,8 +31,8 @@
 			</div>
 		  </div>
 		</nav>
-		<div class="p-3 container-lg bg-secondary">
-			<h1>{{ title }}</h1>
+		<div class="p-3 container-lg text-light">
+			<h1 class="text-light">{{ title }}</h1>
 			{% for message in get_flashed_messages() %}
 				<p><b>{{ message }}</b></p>
 			{% endfor %}
