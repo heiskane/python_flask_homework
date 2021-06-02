@@ -225,7 +225,8 @@ def set_email():
 		flash("Email already registered")
 		return redirect(url_for('profile_page', username=current_user.username))
 	current_user.email = email
-	app.logger.info(email)
+	current_user.is_verified = False
+	current_user.verify_code = urandom(16).hex()
 	db.session.commit()
 	return redirect(url_for('profile_page', username=current_user.username))
 
